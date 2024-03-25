@@ -1,11 +1,18 @@
+<template>
+    <div id="app">
+        <HomeView></HomeView>
+    </div>
+</template>
+
 <script setup>
+import HomeView from './views/HomeView.vue';
+
 
 </script>
 
-<template>
-    <el-button type="primary">111</el-button>
-</template>
-
-<style scoped lang="scss">
-
+<style scoped>
+#app {
+    height: 100%;
+    background-color: var(--body-bgcolor);
+}
 </style>

@@ -1,9 +1,8 @@
-import { fileURLToPath, URL } from "node:url";
-
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
-import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
+import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
+import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import vue from "@vitejs/plugin-vue";
 
 // https://vitejs.dev/config/
@@ -14,7 +13,6 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
     Components({
-      //配置elementPlus采用sass样式配色系统
       resolvers: [ElementPlusResolver({ importStyle: "sass" })],
     }),
   ],
@@ -26,9 +24,9 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        // 自动导入定制化样式文件进行样式覆盖
         additionalData: `
-          @use "@/styles/element/index.scss" as *;      
+          @import "@/style/variables.scss";
+          @import "@/style/mixin.scss";
         `,
       },
     },

@@ -1,9 +1,7 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import test from '@/layout/header.vue';
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+    <test></test>
 </template>
