@@ -1,15 +1,23 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+
+// 内容需要居中的页面
+const Discovery = () => import('@/views/discovery/index.vue');
+
+const routes = [
+  {
+    path: '/',
+    redirect: '/discovery'
+  },
+  {
+    path: '/discovery',
+    component: Discovery,
+  },
+];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView
-    }
-  ]
-})
+  history: createWebHistory(),
+  routes,
+});
 
-export default router
+export default router;
+

@@ -33,7 +33,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import Icon from '@/subcomponents/Icon.vue';
+import Icon from '@/base/icon.vue';
 import { requestFullScreen, exitFullscreen, isFullscreen } from '@/utils/common';
 
 const isPlayerShow = ref(false);

@@ -1,3 +1,10 @@
+<template>
+  <span v-if="backdrop" :style="{ width: backDropSize, height: backDropSize }" class="backdrop">
+    <i :class="['iconfont', 'icon-component', getIconCls]" :style="getIconStyle" @click="onClick" />
+  </span>
+  <i v-else :class="['iconfont', 'icon-component', getIconCls]" :style="getIconStyle" @click="onClick" />
+</template>
+
 <script setup>
 import { ref, computed } from 'vue';
 import { toRem } from "@/utils/rem";
@@ -48,13 +55,6 @@ const getIconStyle = computed(() => {
 const backDropSizeRatio = 1.56;
 const backDropSize = computed(() => toRem(backDropSizeRatio * props.size));
 </script>
-
-<template>
-  <span v-if="backdrop" :style="{ width: backDropSize, height: backDropSize }" class="backdrop">
-    <i :class="['iconfont', 'icon-component', getIconCls]" :style="getIconStyle" @click="onClick" />
-  </span>
-  <i v-else :class="['iconfont', 'icon-component', getIconCls]" :style="getIconStyle" @click="onClick" />
-</template>
 
 <style lang="scss" scoped>
 .backdrop {
