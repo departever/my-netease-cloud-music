@@ -1,3 +1,4 @@
+//将文本截断并在末尾显示省略号
 @mixin text-ellipsis() {
   overflow: hidden;
   text-overflow: ellipsis;
