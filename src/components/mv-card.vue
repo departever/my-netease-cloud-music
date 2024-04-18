@@ -20,8 +20,8 @@
 </template>
 
 <script setup>
-// import { isDef } from "@/utils"
-// import { useRouter } from 'vue-router'
+import { isDef } from "@/utils"
+import { useRouter } from 'vue-router'
 
 // 使用defineProps定义组件属性
 const props = defineProps({
@@ -33,14 +33,14 @@ const props = defineProps({
     author: String
 })
 
-// const router = useRouter()
+const router = useRouter()
 
-// // 定义跳转到MV详情页的方法
-// const goMv = () => {
-//     if (isDef(props.id)) {
-//         router.push(`/mv/${props.id}`)
-//     }
-// }
+// 定义跳转到MV详情页的方法
+const goMv = () => {
+    if (isDef(props.id)) {
+        router.push(`/mv/${props.id}`)
+    }
+}
 </script>
 
 

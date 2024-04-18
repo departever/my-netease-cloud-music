@@ -19,9 +19,6 @@
 /**
  * 左边是图片 右边上下两行文字的卡片
  */
-import { defineProps, defineEmits } from 'vue'
-
-
 // 定义props
 const props = defineProps({
     img: String,

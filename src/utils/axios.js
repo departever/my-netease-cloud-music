@@ -1,19 +1,18 @@
 import axios from "axios";
 import { ElLoading } from "element-plus";
-import { confirm } from "./confirm.js"
+import { confirm } from "./confirm.js";
 import { useAxiosLoaderStore } from "@/store/global";
 
 //注意，这个axios.js不能放入$utils中，因为使用了pinia中的东西
 
 //这里用的是现成搭好的，后续可以更换为自己的
 const BASE_URL = "https://mu-api.yuk0.com/";
+// const BASE_URL = "https://fetch0.488848.xyz/https://servencmapi-kltu2mmna3l0.runkit.sh";
 
 //不带全局loading的请求实例
 export const requestWithoutLoading = createBaseInstance();
 
 // 带全局loading的请求实例
-// 传入函数是因为需要在处理请求结果handleResponse之前处理loading
-// 所以要在内部插入loading拦截器的处理逻辑
 export const request = createBaseInstance();
 mixinLoading(request.interceptors);
 

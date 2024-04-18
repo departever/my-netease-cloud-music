@@ -71,7 +71,7 @@ const pickUpPlayer = () => {
     var(--header-input-bgcolor),
     var(--header-input-placeholder-color));
 
-  ::v-deep .iconfont {
+  :deep(.iconfont) {
     color: var(--header-font-color);
   }
 
