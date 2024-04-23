@@ -8,7 +8,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { getBanner } from "@/api/discovery";
+import { getBanner } from "@/api";
 
 const banners = ref([]);
 

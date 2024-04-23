@@ -1,4 +1,4 @@
-import { getAlbum } from "@/api/album"
+import { getAlbum } from "@/api"
 /**
  * 业务工具方法
  */

@@ -11,8 +11,24 @@ const Discovery = () => import('@/page/discovery/index.vue');
 // const SearchMvs = () => import('@/page/search/mvs')
 // const Mvs = () => import('@/page/mvs')
 const Mv = () => import('@/page/mv/index.vue')
+const Test = () => import('@/page/test/index.vue')
 
-const routes = [
+export const layoutCenterNames = ['discovery']
+
+// 需要显示在侧边栏菜单的页面
+export const menuRoutes = [
+  {
+    path: '/discovery',
+    name: 'discovery',
+    component: Discovery,
+    meta: {
+      title: '发现音乐',
+      icon: 'music',
+    },
+  },
+]
+
+export const routes = [
   {
     path: '/',
     redirect: '/discovery'
@@ -27,6 +43,10 @@ const routes = [
     component: Mv,
     props: (route) =>  ({id: +route.params.id}),
   },
+  {
+    path: '/test',
+    component: Test,
+  }
 ];
 
 const router = createRouter({

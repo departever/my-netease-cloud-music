@@ -1,6 +1,6 @@
 <template>
   <el-dialog :modal="false" :visible="visible" :width="$utils.toRem(320)" class="confirm-dialog">
-    <template #title>
+    <template #header>
       <div>{{ title || '提示' }}</div>
     </template>
     <div class="confirm-body">{{ text }}</div>
@@ -13,8 +13,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { ElDialog, ElButton } from 'element-plus';
+import { ref } from 'vue'
 
 const props = defineProps({
   visible: Boolean,

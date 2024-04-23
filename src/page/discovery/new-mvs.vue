@@ -12,7 +12,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getPersonalizedMv } from "@/api/discovery"
+import { getPersonalizedMv } from "@/api"
 
 const mvs = ref([])
 

@@ -11,7 +11,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import PlaylistCard from '@/components/playlist-card.vue'
-import { getPersonalized } from '@/api/discovery.js'
+import { getPersonalized } from '@/api'
 
 const list = ref([])
 

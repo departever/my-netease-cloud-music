@@ -1,64 +1,69 @@
 <template>
   <div class="header">
-    <div class="leftside">
+    <div class="left">
       <div class="buttons">
-        <div @click="backToHome" class="mac-button red">
+        <div @click="onClickLogo" class="mac-button red">
           <Icon :size="9" type="home" />
         </div>
-        <div @click="exitFullScreen" class="mac-button yellow">
+        <div @click="exitFullscreen" class="mac-button yellow">
           <Icon :size="9" type="minus" />
         </div>
-        <div @click="fullScreen" class="mac-button green">
+        <div @click="fullscreen" class="mac-button green">
           <Icon :size="9" type="fullscreen" />
         </div>
       </div>
-      <!-- 收起播放器 -->
-      <div @click="pickUpPlayer" class="shrink-player" v-if="isPlayerShow">
+      <!-- 缩起播放器 -->
+      <div @click="onClickDown" class="shrink-player" v-if="isPlayerShow">
         <Icon :backdrop="true" type="down" />
       </div>
       <!-- 路由记录器 -->
       <div class="history" v-show="!isPlayerShow">
-          <!-- 待完成 -->
+        <RoutesHistory />
       </div>
     </div>
-    <div class="rightside">
-      <div class="search-box">
-        <!-- 待完成搜索框 -->
+    <div class="right">
+      <div class="search-wrap">
+        <Search />
       </div>
-      <!-- 待完成主题切换 -->
+      <Theme />
     </div>
   </div>
 </template>
 
 
 <script setup>
-import { ref } from 'vue';
-import Icon from '@/base/icon.vue';
-import { requestFullScreen, exitFullscreen, isFullscreen } from '@/utils/common';
+import { ref, computed } from 'vue';
+import { useMusicStore } from '@/store/music';
+import { useRouter } from 'vue-router';
+import Theme from "@/components/theme.vue";
+import Search from "@/components/search.vue";
+import RoutesHistory from "@/components/routes-history.vue";
+import { requestFullScreen, exitFullscreen, isFullscreen } from "@/utils";
 
-const isPlayerShow = ref(false);
+const musicStore = useMusicStore();
+const router = useRouter();
 
-const backToHome = () => {
-  // ...
+const isPlayerShow = computed(() => musicStore.isPlayerShow);
+
+const onClickLogo = () => {
+  router.push("/discovery");
 };
 
-const exitFullScreen = () => {
-  if (isFullscreen()) {
-    exitFullscreen();
-  }
+const onClickDown = () => {
+  musicStore.setPlayerShow(false);
 };
 
-const fullScreen = () => {
+const fullscreen = () => {
   requestFullScreen(document.documentElement);
 };
 
-const pickUpPlayer = () => {
-  // ...
+const toggleFullscreen = () => {
+  musicStore.isFullscreen = !musicStore.isFullscreen;
 };
 </script>
 
 <style lang="scss" scoped>
-@import "@/style/element-overwrite";
+@import "../style/element-overwrite";
 
 .header {
   display: flex;
@@ -71,11 +76,11 @@ const pickUpPlayer = () => {
     var(--header-input-bgcolor),
     var(--header-input-placeholder-color));
 
-  :deep(.iconfont) {
+  :deep(iconfont) {
     color: var(--header-font-color);
   }
 
-  .leftside {
+  .left {
     padding: 14px 14px 0 8px;
     display: flex;
 
@@ -135,11 +140,11 @@ const pickUpPlayer = () => {
     }
   }
 
-  .rightside {
+  .right {
     display: flex;
     align-items: center;
 
-    .search-box {
+    .search-wrap {
       margin-right: 16px;
     }
   }

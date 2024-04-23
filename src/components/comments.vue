@@ -26,7 +26,7 @@
 
 <script setup>
 import { ref, watch, computed, onMounted } from 'vue';
-import { getSongComment, getPlaylistComment, getHotComment, getMvComment } from "@/api/comment";
+import { getSongComment, getPlaylistComment, getHotComment, getMvComment } from "@/api";
 import { getPageOffset, scrollInto } from "@/utils";
 import Comment from "@/components/comment.vue";
 

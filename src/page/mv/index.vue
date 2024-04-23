@@ -44,9 +44,8 @@
 
 <script setup>
 import { watchEffect, ref, onMounted, watch } from 'vue';
-import { getMvDetail, getMvUrl, getSimiMv } from "@/api/mv";
-import { getArtists } from "@/api/artist"
-import { usePlayerStore } from "@/store/music"
+import { getMvDetail, getMvUrl, getSimiMv, getArtists } from "@/api";
+import { useMusicStore } from "@/store/music"
 
 const props = defineProps({
     id: {
@@ -56,7 +55,7 @@ const props = defineProps({
 });
 
 const videoRef = ref(null);
-const playerStore = usePlayerStore();
+const musicStore = useMusicStore();
 const mvDetail = ref({});
 const mvPlayInfo = ref({});
 const artist = ref({});
@@ -81,17 +80,17 @@ const init = async () => {
 };
 
 onMounted(() => {
-  init();
+    init();
 
-  watchEffect(() => {
-    if (videoRef.value && videoRef.value.player) {
-      const player = videoRef.value.player;
-      player.on('play', () => {
-        // 停止播放歌曲
-        playerStore.setPlayingState(false);
-      });
-    }
-  });
+    watchEffect(() => {
+        if (videoRef.value && videoRef.value.player) {
+            const player = videoRef.value.player;
+            player.on('play', () => {
+                // 停止播放歌曲
+                musicStore.setPlayingState(false);
+            });
+        }
+    });
 });
 
 watch(() => props.id, (newId, oldId) => {

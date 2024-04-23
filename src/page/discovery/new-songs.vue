@@ -12,7 +12,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { getNewSongs } from '@/api/discovery';
+import { getNewSongs } from '@/api';
 import SongCard from '@/components/song-card.vue';
 import { createSong } from '@/utils/business';
 
