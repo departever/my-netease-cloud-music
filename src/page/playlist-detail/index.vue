@@ -2,7 +2,7 @@
     <div class="playlist-detail" v-if="playlist.id">
         <DetailHeader ref="header" :playlist="playlist" :songs="songs" />
         <div class="tabs-wrap">
-            <Tabs :tabs="tabs" type="theme" v-model="activeTab" @tabChange="handleTabChange"/>
+            <Tabs :tabs="tabs" type="theme" :active="activeTab" @tabChange="handleTabChange"/>
             <el-input :class="getInputCls()" @blur="onInputBlur" @focus="onInputFocus" class="input"
                 placeholder="搜索歌单音乐" prefix-icon="el-icon-search" v-model="searchValue"
                 v-show="activeTab === SONG_IDX"></el-input>
@@ -85,7 +85,6 @@ const genSonglist = async (playlist) => {
 };
 
 const onCommentsUpdate = ({ newTotal }) => {
-    console.log(newTotal);
     tabs.value.splice(COMMENT_IDX, 1, `评论(${newTotal})`);
 };
 

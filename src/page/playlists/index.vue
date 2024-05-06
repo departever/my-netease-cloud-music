@@ -5,7 +5,7 @@
                 :img="state.topPlaylist.coverImgUrl" :name="state.topPlaylist.name" />
         </div>
         <div class="tabs">
-            <Tabs :tabs="tabs" @tabChange="onTabChange" align="right" type="small" v-model="state.activeTabIndex" />
+            <Tabs :tabs="tabs" @tabChange="onTabChange" align="right" type="small" :active="state.activeTabIndex" />
         </div>
         <div class="playlist-cards">
             <PlaylistCard v-for="item in state.playlists" :key="item.id"
