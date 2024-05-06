@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 // 内容需要居中的页面
 const Discovery = () => import("@/page/discovery/index.vue");
-// const PlaylistDetail = () => import('@/page/playlist-detail')
+const PlaylistDetail = () => import('@/page/playlist-detail/index.vue')
 const Playlists = () => import("@/page/playlists/index.vue");
 const Songs = () => import("@/page/songs/index.vue");
 // const Search = () => import('@/page/search')
@@ -59,6 +59,11 @@ export const routes = [
     path: "/playlists",
     name: "playlists",
     component: Playlists,
+  },
+  {
+    path: '/playlist/:id',
+    name: 'playlist',
+    component: PlaylistDetail,
   },
   {
     path: "/mv/:id",

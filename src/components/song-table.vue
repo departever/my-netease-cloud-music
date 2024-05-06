@@ -16,7 +16,7 @@
                     <div class="song-table-name-cell">
                         <HighlightText class="song-table-name" :text="scope.row.name" :highlight-text="highlightText" />
                         <Icon v-if="scope.row.mvId" class="mv-icon" @click="goMvWithCheck(scope.row.mvId)" type="mv"
-                            color="theme" size="18" />
+                            color="theme" :size="18" />
                     </div>
                     <template v-if="renderNameDesc">
                         {{ renderNameDesc(scope) }}
@@ -29,7 +29,7 @@
                     {{ scope.row.albumName }}
                 </div>
                 <span v-if="column.prop === 'durationSecond'">
-                    {{ scope.row.durationSecond | formatTime }}
+                    {{ $utils.formatTime(scope.row.durationSecond) }}
                 </span>
             </template>
         </el-table-column>
