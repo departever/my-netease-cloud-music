@@ -2,18 +2,17 @@ import { createRouter, createWebHistory } from "vue-router";
 
 // 内容需要居中的页面
 const Discovery = () => import("@/page/discovery/index.vue");
-const PlaylistDetail = () => import('@/page/playlist-detail/index.vue')
+const PlaylistDetail = () => import("@/page/playlist-detail/index.vue");
 const Playlists = () => import("@/page/playlists/index.vue");
 const Songs = () => import("@/page/songs/index.vue");
-// const Search = () => import('@/page/search')
-// const SearchSongs = () => import('@/page/search/songs')
-// const SearchPlaylists = () => import('@/page/search/playlists')
-// const SearchMvs = () => import('@/page/search/mvs')
-// const Mvs = () => import('@/page/mvs')
+const Search = () => import("@/page/search/index.vue");
+const SearchSongs = () => import("@/page/search/songs.vue");
+const SearchPlaylists = () => import("@/page/search/playlists.vue");
+const SearchMvs = () => import("@/page/search/mvs.vue");
+const Mvs = () => import("@/page/mvs/index.vue");
 const Mv = () => import("@/page/mv/index.vue");
-const Test = () => import("@/page/test/index.vue");
 
-export const layoutCenterNames = ["discovery", "playlists"];
+export const layoutCenterNames = ["discovery", "playlists", "songs", "mvs"];
 
 // 需要显示在侧边栏菜单的页面
 export const menuRoutes = [
@@ -44,26 +43,54 @@ export const menuRoutes = [
       icon: "yinyue",
     },
   },
+  {
+    path: "/mvs",
+    name: "mvs",
+    component: Mvs,
+    meta: {
+      title: "最新MV",
+      icon: "mv",
+    },
+  },
 ];
 
-export const routes = [
+const routes = [
   {
     path: "/",
     redirect: "/discovery",
   },
   {
-    path: "/discovery",
-    component: Discovery,
-  },
-  {
-    path: "/playlists",
-    name: "playlists",
-    component: Playlists,
-  },
-  {
-    path: '/playlist/:id',
-    name: 'playlist',
+    path: "/playlist/:id",
+    name: "playlist",
     component: PlaylistDetail,
+  },
+  {
+    path: "/search/:keywords",
+    component: Search,
+    props: true,
+    children: [
+      {
+        path: "",
+        redirect: { name: "searchSongs" },
+      },
+      {
+        path: "songs",
+        name: "searchSongs",
+        component: SearchSongs,
+      },
+      {
+        path: "playlists",
+        name: "searchPlaylists",
+        component: SearchPlaylists,
+        props: true,
+      },
+      {
+        path: "mvs",
+        name: "searchMvs",
+        component: SearchMvs,
+        props: true,
+      },
+    ],
   },
   {
     path: "/mv/:id",
@@ -72,12 +99,24 @@ export const routes = [
     props: (route) => ({ id: +route.params.id }),
   },
   {
-    path: "/test",
-    component: Test,
+    path: "/discovery",
+    name: "discovery",
+    component: Discovery,
+  },
+  {
+    path: "/playlists",
+    name: "playlists",
+    component: Playlists,
   },
   {
     path: "/songs",
+    name: "songs",
     component: Songs,
+  },
+  {
+    path: "/mvs",
+    name: "mvs",
+    component: Mvs,
   },
 ];
 

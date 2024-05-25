@@ -13,12 +13,14 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { getNewSongs } from '@/api';
+import { useMusicStore } from '@/store/music'
 import SongCard from '@/components/song-card.vue';
 import { createSong } from '@/utils/business';
 
 const songsLimit = 10;
 const chunkLimit = Math.ceil(songsLimit / 2);
 const list = ref([]);
+const { startSong, setPlaylist } = useMusicStore()
 
 onMounted(async () => {
     const { result } = await getNewSongs();

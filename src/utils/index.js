@@ -7,3 +7,5 @@ export * from './confirm'
 export * from './dom'
 
 export * from './config'
+
+export * from './lrcparse'

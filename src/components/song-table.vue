@@ -1,39 +1,37 @@
 <template>
-    <el-table v-if="songs.length" :data="songs" class="song-table" :cell-class-name="tableCellClassName"
-        header-cell-class-name="title-th" style="width: 99.9%" @row-click="onRowClick">
-        <el-table-column v-for="(column, index) in showColumns" :key="index" :prop="column.prop" :label="column.label"
-            :width="column.width">
-            <template v-slot:default="scope">
-                <div v-if="column.prop === 'index'" class="index-wrap">
-                    <Icon v-if="isActiveSong(scope.row)" class="horn" type="horn" color="theme" />
-                    <span v-else>{{ pad(scope.$index + 1) }}</span>
-                </div>
-                <div v-if="column.prop === 'img'" class="img-wrap">
-                    <img :src="scope.row.img" />
-                    <PlayIcon class="play-icon" />
-                </div>
-                <div v-if="column.prop === 'name'">
-                    <div class="song-table-name-cell">
-                        <HighlightText class="song-table-name" :text="scope.row.name" :highlight-text="highlightText" />
-                        <Icon v-if="scope.row.mvId" class="mv-icon" @click="goMvWithCheck(scope.row.mvId)" type="mv"
-                            color="theme" :size="18" />
-                    </div>
-                    <template v-if="renderNameDesc">
-                        {{ renderNameDesc(scope) }}
-                    </template>
-                </div>
-                <div v-if="column.prop === 'artistsText'">
-                    {{ scope.row.artistsText }}
-                </div>
-                <div v-if="column.prop === 'albumName'">
-                    {{ scope.row.albumName }}
-                </div>
-                <span v-if="column.prop === 'durationSecond'">
-                    {{ $utils.formatTime(scope.row.durationSecond) }}
-                </span>
-            </template>
-        </el-table-column>
-    </el-table>
+  <el-table v-if="songs.length" :data="songs" class="song-table" :cell-class-name="tableCellClassName"
+    header-cell-class-name="title-th" style="width: 99.9%" @row-click="onRowClick">
+    <el-table-column v-for="(column, index) in showColumns" :key="index" :prop="column.prop" :label="column.label"
+      :width="column.width">
+      <template v-slot:default="scope">
+        <div v-if="column.prop === 'index'" class="index-wrap">
+          <Icon v-if="isActiveSong(scope.row)" class="horn" type="horn" color="theme" />
+          <span v-else>{{ pad(scope.$index + 1) }}</span>
+        </div>
+        <div v-if="column.prop === 'img'" class="img-wrap">
+          <img :src="scope.row.img" />
+          <PlayIcon class="play-icon" />
+        </div>
+        <div v-if="column.prop === 'name'">
+          <div class="song-table-name-cell">
+            <HighlightText class="song-table-name" :text="scope.row.name" :highlight-text="highlightText" />
+            <Icon v-if="scope.row.mvId" class="mv-icon" @click="goMvWithCheck(scope.row.mvId)" type="mv" color="theme"
+              :size="18" />
+          </div>
+          <NameDescRenderer v-if="scope.row.alias" :alias="scope.row.alias" :highlightText="highlightText" />
+        </div>
+        <div v-if="column.prop === 'artistsText'">
+          {{ scope.row.artistsText }}
+        </div>
+        <div v-if="column.prop === 'albumName'">
+          {{ scope.row.albumName }}
+        </div>
+        <span v-if="column.prop === 'durationSecond'">
+          {{ $utils.formatTime(scope.row.durationSecond) }}
+        </span>
+      </template>
+    </el-table-column>
+  </el-table>
 </template>
 
 <script setup>
@@ -44,21 +42,21 @@ import { pad } from '@/utils';
 import { goMvWithCheck } from '@/utils/business'
 
 const props = defineProps({
-    hideColumns: {
-        type: Array,
-        default: () => [],
-    },
-    songs: {
-        type: Array,
-        default: () => [],
-    },
-    highlightText: {
-        type: String,
-        default: "",
-    },
-    renderNameDesc: {
-        type: Function,
-    },
+  hideColumns: {
+    type: Array,
+    default: () => [],
+  },
+  songs: {
+    type: Array,
+    default: () => [],
+  },
+  highlightText: {
+    type: String,
+    default: "",
+  },
+  renderNameDesc: {
+    type: Function,
+  },
 });
 
 const musicStore = useMusicStore();
@@ -68,60 +66,60 @@ const isActiveSong = (song) => song.id === currentSong.value.id;
 const columns = ref([]);
 
 const showColumns = computed(() => {
-    const hideColumns = props.hideColumns.slice();
-    const reference = props.songs[0];
-    const { img } = reference;
-    if (!img) {
-        hideColumns.push('img');
-    }
-    return columns.value.filter(column => {
-        return !hideColumns.find(hideColumn => hideColumn === column.prop);
-    });
+  const hideColumns = props.hideColumns.slice();
+  const reference = props.songs[0];
+  const { img } = reference;
+  if (!img) {
+    hideColumns.push('img');
+  }
+  return columns.value.filter(column => {
+    return !hideColumns.find(hideColumn => hideColumn === column.prop);
+  });
 });
 
 const onRowClick = (song) => {
-    musicStore.startSong(song);
-    musicStore.setPlaylist(props.songs);
+  musicStore.startSong(song);
+  musicStore.setPlaylist(props.songs);
 };
 
 const tableCellClassName = ({ row, columnIndex }) => {
-    let retCls = [];
-    if (isActiveSong(row) && columnIndex === showColumns.value.findIndex(({ prop }) => prop === 'name')) {
-        retCls.push('song-active');
-    }
-    return retCls.join(' ');
+  let retCls = [];
+  if (isActiveSong(row) && columnIndex === showColumns.value.findIndex(({ prop }) => prop === 'name')) {
+    retCls.push('song-active');
+  }
+  return retCls.join(' ');
 };
 
 // 定义columns
 columns.value = [
-    {
-        prop: "index",
-        label: "",
-        width: "70",
-    },
-    {
-        prop: "img",
-        label: " ",
-        width: "100",
-    },
-    {
-        prop: "name",
-        label: "音乐标题",
-        className: "title-td",
-    },
-    {
-        prop: "artistsText",
-        label: "歌手",
-    },
-    {
-        prop: "albumName",
-        label: "专辑",
-    },
-    {
-        prop: "durationSecond",
-        label: "时长",
-        width: "100",
-    },
+  {
+    prop: "index",
+    label: "",
+    width: "70",
+  },
+  {
+    prop: "img",
+    label: " ",
+    width: "100",
+  },
+  {
+    prop: "name",
+    label: "音乐标题",
+    className: "title-td",
+  },
+  {
+    prop: "artistsText",
+    label: "歌手",
+  },
+  {
+    prop: "albumName",
+    label: "专辑",
+  },
+  {
+    prop: "durationSecond",
+    label: "时长",
+    width: "100",
+  },
 ];
 </script>
 
@@ -160,10 +158,12 @@ columns.value = [
     img {
       border-radius: 4px;
     }
+
     .play-icon {
       @include abs-center;
     }
   }
+
   .high-light-text {
     color: $blue;
   }

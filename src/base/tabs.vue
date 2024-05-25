@@ -81,11 +81,15 @@ function onChangeTab(tab, index) {
 
 function isActive(tab, index) {
     if (isRouteMode.value) {
-        const { resolved: { path: resolvedPath } } = router.resolve(tab.to);
-        return resolvedPath === route.path;
+        const resolved = router.resolve(tab.to);
+        if (resolved && resolved.resolved && resolved.resolved.path) {
+            const { path: resolvedPath } = resolved.resolved;
+            return resolvedPath === route.path;
+        }
+        return false;
     } else {
         return index === active.value;
-    }
+    } 
 }
 
 function getItemCls(tab, index) {

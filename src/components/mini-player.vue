@@ -88,6 +88,7 @@ const isPlayErrorPromptShow = ref(false);
 const songReady = ref(false);
 const volume = ref(Storage.get(VOLUME_KEY, DEFAULT_VOLUME));
 const audio = ref(null);
+const isPlaylistPromptShow = ref(false);
 
 onMounted(() => {
   audio.value.volume = volume.value;
@@ -206,9 +207,8 @@ const playedPercent = computed(() => {
   return Math.min(musicStore.currentTime / durationSecond, 1) || 0;
 });
 const playControlIcon = computed(() => musicStore.isPlayerShow ? "shrink" : "open");
-// 添加 isPlaylistPromptShow 的定义
-const isPlaylistPromptShow = ref(false);
 const currentSong = computed(() => musicStore.currentSong);
+const currentTime = computed(() => musicStore.currentTime);
 </script>
 
 <style lang="scss" scoped>

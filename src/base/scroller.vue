@@ -14,40 +14,48 @@ BScroll.use(ScrollBar);
 BScroll.use(MouseWheel);
 
 const scroller = ref(null);
-const data = ref([]); // 假设 data 是响应式的数据源
+const scrollerInstance = ref(null);
+
+
+const props = defineProps({
+    data: {
+        type: Array,
+        default: () => []
+    },
+    options: {
+        type: Object,
+        default: () => ({})
+    }
+});
 
 const defaultOptions = {
     mouseWheel: true,
     scrollY: true,
     scrollbar: true,
-    probeType: 3,
-};
+    probeType: 3
+}
 
-const options = ref({});
+
 const emit = defineEmits(['init']);
 
 onMounted(() => {
-    if (!scroller.value) {
-        scroller.value = new BScroll(
-            scroller.value,
-            Object.assign({}, defaultOptions, options.value)
-        );
-        emit('init', scroller.value);
-    } else {
-        scroller.value.refresh();
-    }
+    nextTick(() => {
+        if (!scrollerInstance.value) {
+            scrollerInstance.value = new BScroll(
+                scroller.value,
+                defaultOptions.value
+            );
+            emit('init', scrollerInstance.value);
+        } else {
+            scrollerInstance.value.refresh();
+        }
+    });
 });
 
-watch(data, () => {
+watch(() => props.data, () => {
     nextTick(() => {
-        if (!scroller.value) {
-            scroller.value = new BScroll(
-                scroller.value,
-                Object.assign({}, defaultOptions, options.value)
-            );
-            emit('init', scroller.value);
-        } else {
-            scroller.value.refresh();
+        if (scrollerInstance.value) {
+            scrollerInstance.value.refresh();
         }
     });
 }, { immediate: true });

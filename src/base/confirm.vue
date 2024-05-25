@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :modal="false" :visible="visible" :width="$utils.toRem(320)" class="confirm-dialog">
+  <el-dialog :modal="false" :visible="visible" :width="toRem(320)" class="confirm-dialog">
     <template #header>
       <div>{{ title || '提示' }}</div>
     </template>
@@ -14,6 +14,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { toRem } from '@/utils';
 
 const props = defineProps({
   visible: Boolean,

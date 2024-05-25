@@ -12,9 +12,18 @@ import { getBanner } from "@/api";
 
 const banners = ref([]);
 
+// onMounted(async () => {
+//   const { banners: loadedBanners } = await getBanner();
+//   banners.value = loadedBanners;
+// });
+
 onMounted(async () => {
-  const { banners: loadedBanners } = await getBanner();
-  banners.value = loadedBanners;
+  try {
+    const { banners: loadedBanners } = await getBanner();
+    banners.value = loadedBanners;
+  } catch (error) {
+    console.error('Error loading banners:', error);
+  }
 });
 </script>
 

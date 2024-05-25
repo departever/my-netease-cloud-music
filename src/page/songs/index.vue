@@ -1,7 +1,7 @@
 <template>
     <div class="songs">
         <div class="tabs">
-            <Tabs :tabs="tabs" @tabChange="getSongs" align="right" type="small" v-model="activeTabIndex" />
+            <Tabs :tabs="tabs" @tabChange="getSongs" align="right" type="small" :active="activeTabIndex" />
         </div>
         <SongTable :songs="songs" header-row-class-name="header-row" />
     </div>
@@ -23,7 +23,7 @@ const tabs = ref([
     { title: "韩国", type: 16 }
 ]);
 
-async function getSongs() {
+async function fetchSongs() {
     const { data } = await getTopSongs(tabs.value[activeTabIndex.value].type);
     songs.value = data.map(song => {
         const {
@@ -46,8 +46,13 @@ async function getSongs() {
     });
 }
 
+function getSongs(newIndex) {
+  activeTabIndex.value = newIndex;
+  fetchSongs();
+}
+
 onMounted(() => {
-    getSongs();
+    fetchSongs();
 });
 </script>
 
