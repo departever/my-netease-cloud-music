@@ -14,9 +14,10 @@ import Playlist from "@/components/playlist.vue"
 import Player from "@/components/player.vue"
 </script>
 
-<style scoped>
+<style lang="scss">
 #app {
-    height: 100%;
-    background-color: var(--body-bgcolor);
+  height: 100%;
+  background-color: var(--body-bgcolor);
+  font-size: $font-size;
 }
 </style>

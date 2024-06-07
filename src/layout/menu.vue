@@ -1,20 +1,22 @@
 <template>
-    <div class="menu">
-        <user />
-        <div class="menu-wrap">
-            <div :key="index" class="menu-block" v-for="(menu, index) in menusWithPlaylist">
-                <p class="menu-block-title" v-if="menu.title">{{ menu.title }}</p>
-                <ul class="menu-list">
-                    <router-link :key="index" :to="item.path" active-class="menu-item-active" class="menu-item" tag="li"
-                        v-for="(item, index) in menu.children">
-                        <Icon :size="16" :type="item.meta.icon" class="iconfont" />
-                        <span class="menu-title">{{ item.meta.title }}</span>
-                    </router-link>
-                </ul>
-            </div>
-        </div>
+  <div class="menu">
+    <user />
+    <div class="menu-wrap">
+      <div :key="index" class="menu-block" v-for="(menu, index) in menusWithPlaylist">
+        <p class="menu-block-title" v-if="menu.title">{{ menu.title }}</p>
+        <ul class="menu-list">
+          <router-link :key="index" :to="item.path" v-slot="{ navigate, href, isActive, isExactActive }" v-for="(item, index) in menu.children">
+            <li :class="['menu-item', { 'menu-item-active': isActive || isExactActive }]" @click="navigate">
+              <Icon :size="16" :type="item.meta.icon" class="iconfont" />
+              <span class="menu-title">{{ item.meta.title }}</span>
+            </li>
+          </router-link>
+        </ul>
+      </div>
     </div>
+  </div>
 </template>
+
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'

@@ -10,29 +10,59 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { prefixStyle, toCurrentRem } from "@/utils";
 
 const transform = prefixStyle("transform");
 
-const progressBar = ref(null);
-const progress = ref(null);
-const progressBtn = ref(null);
-const percent = ref(0);
-const alwaysShowBtn = ref(false);
-const disabled = ref(false);
-const touch = ref({});
-
-const emit = defineEmits(['percentChange']);
-
-onMounted(() => {
-  if (percent.value > 0) {
-    setProgressOffset(percent.value);
+const props = defineProps({
+  percent: {
+    type: Number,
+    default: 0
+  },
+  alwaysShowBtn: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 });
 
-function progressClick(e) {
-  if (!disabled.value) {
+const emit = defineEmits(['percentChange']);
+
+const progressBar = ref(null);
+const progress = ref(null);
+const progressBtn = ref(null);
+
+const touch = ref({});
+
+const setProgressOffset = (percent) => {
+  if (percent >= 0 && !touch.value.initiated) {
+    const barWidth = progressBar.value.clientWidth;
+    const offsetWidth = percent * barWidth;
+    _offset(offsetWidth);
+  }
+};
+
+const _triggerPercent = () => {
+  emit('percentChange', _getPercent());
+};
+
+const _offset = (offsetWidth) => {
+  const offsetRem = toCurrentRem(offsetWidth);
+  progress.value.style.width = `${offsetRem}`;
+  progressBtn.value.style[transform] = `translate3d(${offsetRem},0,0)`;
+};
+
+const _getPercent = () => {
+  const barWidth = progressBar.value.clientWidth;
+  return progress.value.clientWidth / barWidth;
+};
+
+const progressClick = (e) => {
+  if (!props.disabled) {
     const rect = progressBar.value.getBoundingClientRect();
     const offsetWidth = Math.max(
       0,
@@ -41,32 +71,16 @@ function progressClick(e) {
     _offset(offsetWidth);
     _triggerPercent();
   }
-}
+};
 
-function setProgressOffset(newPercent) {
-  if (newPercent >= 0 && !touch.value.initiated) {
-    const barWidth = progressBar.value.clientWidth;
-    const offsetWidth = newPercent * barWidth;
-    _offset(offsetWidth);
+onMounted(() => {
+  if (props.percent > 0) {
+    console.log("挂载时数字大于0");
+    setProgressOffset(props.percent);
   }
-}
+});
 
-function _triggerPercent() {
-  emit("percentChange", _getPercent());
-}
-
-function _offset(offsetWidth) {
-  const offsetRem = toCurrentRem(offsetWidth);
-  progress.value.style.width = `${offsetRem}`;
-  progressBtn.value.style[transform] = `translate3d(${offsetRem}, 0, 0)`;
-}
-
-function _getPercent() {
-  const barWidth = progressBar.value.clientWidth;
-  return progress.value.clientWidth / barWidth;
-}
-
-watch(percent, (newPercent) => {
+watch(() => props.percent, (newPercent) => {
   setProgressOffset(newPercent);
 });
 </script>

@@ -1,3 +1,5 @@
+
+
 <template>
   <transition name="slide">
     <div v-if="musicStore.hasCurrentSong" :class="getPlayerShowCls()" class="player">
@@ -78,6 +80,7 @@
   </transition>
 </template>
 
+
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick, getCurrentInstance } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -87,6 +90,7 @@ import { debounce, isDef } from '@/utils'
 import { createSong, goMvWithCheck } from '@/utils/business'
 import { useMusicStore } from '@/store/music'
 import Comments from "@/components/comments.vue"
+
 
 const WHEEL_TYPE = 'wheel'
 const SCROLL_TYPE = 'scroll'
@@ -98,27 +102,30 @@ const route = useRoute()
 const router = useRouter()
 
 const lyricScrolling = ref({
-  [WHEEL_TYPE]: false,
-  [SCROLL_TYPE]: false
+
+[WHEEL_TYPE]: false,
+[SCROLL_TYPE]: false
+
 })
 const lyricTimer = ref({
-  [WHEEL_TYPE]: null,
-  [SCROLL_TYPE]: null
+
+[WHEEL_TYPE]: null,
+[SCROLL_TYPE]: null
+
 })
+
 const lyric = ref([])
 const tlyric = ref([])
 const simiLoading = ref(false)
 const simiPlaylists = ref([])
 const simiSongs = ref([])
 const nolyric = ref(false)
-
-const instance = getCurrentInstance()
+const scroller = ref(null)
 
 const updateLyric = async () => {
   const result = await getLyric(musicStore.currentSong.id)
   nolyric.value = !isDef(result.lrc) || !result.lrc.lyric || !result.tlyric
   if (!nolyric.value) {
-    console.log(result)
     const { lyric: parsedLyric, tlyric: parsedTlyric } = lyricParser(result)
     lyric.value = parsedLyric
     tlyric.value = parsedTlyric
@@ -175,16 +182,16 @@ const onInitScroller = scroller => {
     }, AUTO_SCROLL_RECOVER_TIME)
   }
   scroller.on('scrollStart', onScrollStart.bind(null, SCROLL_TYPE))
+
   scroller.on('scrollEnd', onScrollEnd.bind(null, SCROLL_TYPE))
 }
 
 const scrollToActiveLyric = () => {
   if (activeLyricIndex.value !== -1) {
-    const { scroller, lyric: lyricRefs } = instance.proxy.$refs
-    if (lyricRefs && lyricRefs[activeLyricIndex.value]) {
-      scroller
-        .getScroller()
-        .scrollToElement(lyricRefs[activeLyricIndex.value], 200, 0, true)
+    console.log(activeLyricIndex.value)
+    console.log(lyric.value[activeLyricIndex.value])
+    if (lyric && lyric.value[activeLyricIndex.value] && false) {
+      scroller.value.getScroller().scrollToElement(lyric.value[activeLyricIndex.value], 200, 0, true)
     }
   }
 }
@@ -214,7 +221,9 @@ const onGoMv = () => {
 }
 
 const resizeScroller = debounce(() => {
-  instance.proxy.$refs.scroller.getScroller().refresh()
+  if (scroller && scroller.getScroller) {
+    scroller.getScroller().refresh()
+  }
 }, 500)
 
 const addResizeListener = () => {
@@ -230,12 +239,12 @@ const playing = computed(() => musicStore.playing);
 const activeLyricIndex = computed(() => {
   return lyricWithTranslation.value
     ? lyricWithTranslation.value.findIndex((l, index) => {
-        const nextLyric = lyricWithTranslation.value[index + 1]
-        return (
-          musicStore.currentTime >= l.time &&
-          (nextLyric ? musicStore.currentTime < nextLyric.time : true)
-        )
-      })
+      const nextLyric = lyricWithTranslation.value[index + 1]
+      return (
+        musicStore.currentTime >= l.time &&
+        (nextLyric ? musicStore.currentTime < nextLyric.time : true)
+      )
+    })
     : -1
 })
 
@@ -317,13 +326,19 @@ watch(route, () => {
   musicStore.setPlayerShow(false)
 })
 
+onMounted(() => {
+  resizeScroller()
+  addResizeListener()
+})
+
 onBeforeUnmount(() => {
   removeResizeListener()
 })
 </script>
 
-
 <style lang="scss" scoped>
+@use 'sass:math';
+
 @keyframes rotate {
   0% {
     transform: rotate(0);
@@ -373,12 +388,12 @@ $img-outer-d: 300px;
         justify-content: center;
 
         $support-d: 30px;
-        $support-d-half: $support-d / 2;
+        $support-d-half: math.div($support-d, 2);
 
         .play-bar-support {
           position: absolute;
-          left: $img-left-padding + $img-outer-border-d / 2 - $support-d / 2;
-          top: -$support-d-half;
+          left: calc($img-left-padding + #{math.div($img-outer-border-d, 2)} - #{$support-d-half});
+          top: -#{$support-d-half};
           width: $support-d;
           height: $support-d;
           z-index: 2;
@@ -389,7 +404,7 @@ $img-outer-d: 300px;
           $h: 146px;
           position: absolute;
           top: 0;
-          left: $img-left-padding + $img-outer-border-d / 2 - 6px;
+          left: calc($img-left-padding + #{math.div($img-outer-border-d, 2)} - 6px);
           width: $w;
           height: $h;
           z-index: 1;

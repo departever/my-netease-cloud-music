@@ -5,17 +5,20 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, nextTick } from 'vue';
-import BScroll from '@better-scroll/core';
-import ScrollBar from '@better-scroll/scroll-bar';
-import MouseWheel from '@better-scroll/mouse-wheel';
+import { ref, watch, nextTick, onMounted } from 'vue'
+import BScroll from '@better-scroll/core'
+import ScrollBar from '@better-scroll/scroll-bar'
+import MouseWheel from '@better-scroll/mouse-wheel'
 
-BScroll.use(ScrollBar);
-BScroll.use(MouseWheel);
+BScroll.use(ScrollBar)
+BScroll.use(MouseWheel)
 
-const scroller = ref(null);
-const scrollerInstance = ref(null);
-
+const defaultOptions = {
+    mouseWheel: true,
+    scrollY: true,
+    scrollbar: true,
+    probeType: 3
+}
 
 const props = defineProps({
     data: {
@@ -26,39 +29,52 @@ const props = defineProps({
         type: Object,
         default: () => ({})
     }
-});
+})
 
-const defaultOptions = {
-    mouseWheel: true,
-    scrollY: true,
-    scrollbar: true,
-    probeType: 3
+const scroller = ref(null)
+const bsInstance = ref(null)
+
+const getScroller = () => bsInstance.value
+
+const refresh = () => {
+    bsInstance.value.refresh()
 }
-
 
 const emit = defineEmits(['init']);
 
-onMounted(() => {
-    nextTick(() => {
-        if (!scrollerInstance.value) {
-            scrollerInstance.value = new BScroll(
-                scroller.value,
-                defaultOptions.value
-            );
-            emit('init', scrollerInstance.value);
-        } else {
-            scrollerInstance.value.refresh();
-        }
-    });
-});
+watch(
+    () => props.data,
+    async () => {
+        nextTick(() => {
+            if (!bsInstance.value) {
+                bsInstance.value = new BScroll(
+                    scroller.value,
+                    Object.assign({}, defaultOptions, props.options)
+                )
+                emit('init', bsInstance.value)
+            } else {
+                bsInstance.value.refresh()
+            }
+        })
+    },
+    { immediate: true }
+)
 
-watch(() => props.data, () => {
-    nextTick(() => {
-        if (scrollerInstance.value) {
-            scrollerInstance.value.refresh();
-        }
-    });
-}, { immediate: true });
+onMounted(() => {
+    if (props.data.length) {
+        nextTick(() => {
+            if (!bsInstance.value) {
+                bsInstance.value = new BScroll(
+                    scroller.value,
+                    Object.assign({}, defaultOptions, props.options)
+                )
+                emit('init', bsInstance.value)
+            } else {
+                bsInstance.value.refresh()
+            }
+        })
+    }
+})
 </script>
 
 <style lang="scss">

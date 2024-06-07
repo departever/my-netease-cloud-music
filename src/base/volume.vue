@@ -1,14 +1,14 @@
 <template>
     <div class="volume">
-        <Icon :size="20" :type="getIconType" @click="toggleSilence" class="icon" />
-        <div class="progress-wrap" v-show="showProgress">
+        <Icon :size="20" :type="getIconType()" @click="toggleSilence" class="icon" />
+        <div class="progress-wrap">
             <ProgressBar :percent="volumePercent" @percentChange="onProgressChange" alwaysShowBtn />
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
     volume: {
@@ -17,13 +17,24 @@ const props = defineProps({
     }
 });
 
+const emit = defineEmits(['volumeChange']);
+
 const volumePercent = ref(props.volume);
-const lastVolume = ref(props.volume);
-const showProgress = ref(true);
+const lastVolume = ref(volumePercent.value);
+
+const onProgressChange = (percent) => {
+    if (percent < 0.05) {
+        percent = 0;
+    }
+    volumePercent.value = percent;
+    emit('volumeChange', percent);
+};
 
 const isSilence = computed({
-    get: () => volumePercent.value === 0,
-    set: (newSilence) => {
+    get() {
+        return volumePercent.value === 0;
+    },
+    set(newSilence) {
         const target = newSilence ? 0 : lastVolume.value;
         if (newSilence) {
             lastVolume.value = volumePercent.value;
@@ -33,29 +44,19 @@ const isSilence = computed({
     }
 });
 
-const onProgressChange = (percent) => {
-    if (percent < 0.05) {
-        percent = 0;
-    }
-    volumePercent.value = percent;
-    showProgress.value = percent !== 0;
+const getIconType = () => {
+    return isSilence.value ? 'silence' : 'horn';
 };
-
-const getIconType = computed(() => isSilence.value ? 'silence' : 'horn');
 
 const toggleSilence = () => {
     isSilence.value = !isSilence.value;
-    showProgress.value = !isSilence.value;
 };
 
-
-watch(volumePercent, (newVolume) => {
-    if (newVolume !== 0) {
-        lastVolume.value = newVolume;
-    }
-    showProgress.value = newVolume !== 0;
+watch(() => props.volume, (newVolume) => {
+    volumePercent.value = newVolume;
 });
 </script>
+
 
 <style lang="scss" scoped>
 .volume {
