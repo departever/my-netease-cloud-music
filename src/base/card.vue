@@ -1,11 +1,11 @@
 <template>
     <div @click="onClick" class="horizontal-card">
-        <div class="img-wrap">
-            <slot name="img-wrap">
-                <img :src="$utils.genImgUrl(img, 50)" fit="cover"></img>
-            </slot>
-            <slot name="img-mask"></slot>
-        </div>
+        <slot name="img-wrap">
+            <div class="img-wrap">
+                <img v-lazy="$utils.genImgUrl(img, 50)" />
+                <slot name="img-mask"></slot>
+            </div>
+        </slot>
         <div class="content">
             <div class="name">{{ name }}</div>
             <div class="desc">
@@ -14,6 +14,7 @@
         </div>
     </div>
 </template>
+
 
 <script setup>
 /**

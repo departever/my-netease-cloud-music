@@ -75,7 +75,6 @@ const progressClick = (e) => {
 
 onMounted(() => {
   if (props.percent > 0) {
-    console.log("挂载时数字大于0");
     setProgressOffset(props.percent);
   }
 });

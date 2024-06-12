@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick, onMounted } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import BScroll from '@better-scroll/core'
 import ScrollBar from '@better-scroll/scroll-bar'
 import MouseWheel from '@better-scroll/mouse-wheel'
@@ -34,13 +34,22 @@ const props = defineProps({
 const scroller = ref(null)
 const bsInstance = ref(null)
 
-const getScroller = () => bsInstance.value
+const emit = defineEmits(['init']);
+
+const getScroller = () => {
+    return bsInstance.value;
+};
 
 const refresh = () => {
-    bsInstance.value.refresh()
-}
+    if (bsInstance.value) {
+        bsInstance.value.refresh();
+    }
+};
 
-const emit = defineEmits(['init']);
+defineExpose({
+    getScroller,
+    refresh
+});
 
 watch(
     () => props.data,
@@ -59,22 +68,6 @@ watch(
     },
     { immediate: true }
 )
-
-onMounted(() => {
-    if (props.data.length) {
-        nextTick(() => {
-            if (!bsInstance.value) {
-                bsInstance.value = new BScroll(
-                    scroller.value,
-                    Object.assign({}, defaultOptions, props.options)
-                )
-                emit('init', bsInstance.value)
-            } else {
-                bsInstance.value.refresh()
-            }
-        })
-    }
-})
 </script>
 
 <style lang="scss">

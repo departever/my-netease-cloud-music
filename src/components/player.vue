@@ -1,5 +1,3 @@
-
-
 <template>
   <transition name="slide">
     <div v-if="musicStore.hasCurrentSong" :class="getPlayerShowCls()" class="player">
@@ -28,13 +26,11 @@
               </div>
             </div>
             <empty v-if="nolyric">还没有歌词哦~</empty>
-            <Scroller :data="lyric" :options="{ disableTouch: true }" @init="onInitScroller" class="lyric-wrap"
-              ref="scroller" v-else>
+            <Scroller :data="lyric" :options="{ disableTouch: true }" @init="onInitScroller" class="lyric-wrap" ref="scroller" v-else>
               <div>
-                <div :class="getActiveCls(index)" :key="index" class="lyric-item" ref="lyric"
+                <div :class="getActiveCls(index)" :key="index" class="lyric-item" :ref="setLyricRef"
                   v-for="(l, index) in lyricWithTranslation">
-                  <p :key="contentIndex" class="lyric-text" v-for="(content, contentIndex) in l.contents">{{ content }}
-                  </p>
+                  <p :key="contentIndex" class="lyric-text" v-for="(content, contentIndex) in l.contents">{{ content }}</p>
                 </div>
               </div>
             </Scroller>
@@ -50,8 +46,7 @@
               <div class="simi-playlists" v-if="simiPlaylists.length">
                 <p class="title">包含这首歌的歌单</p>
                 <div :key="simiPlaylist.id" class="simi-item" v-for="simiPlaylist in simiPlaylists">
-                  <Card :img="simiPlaylist.coverImgUrl" :name="simiPlaylist.name"
-                    @click="onClickPlaylist(simiPlaylist.id)">
+                  <Card :img="simiPlaylist.coverImgUrl" :name="simiPlaylist.name" @click="onClickPlaylist(simiPlaylist.id)">
                     <template v-slot:desc>
                       <div class="desc">
                         <Icon :size="12" color="shallow" type="play" />
@@ -64,8 +59,7 @@
               <div class="simi-songs" v-if="simiSongs.length">
                 <p class="title">相似歌曲</p>
                 <div :key="simiSong.id" class="simi-item" v-for="simiSong in simiSongs">
-                  <Card :desc="simiSong.artistsText" :img="simiSong.img" :name="simiSong.name"
-                    @click="onClickSong(simiSong)">
+                  <Card :desc="simiSong.artistsText" :img="simiSong.img" :name="simiSong.name" @click="onClickSong(simiSong)">
                     <template v-slot:img-mask>
                       <PlayIcon class="play-icon" />
                     </template>
@@ -80,9 +74,8 @@
   </transition>
 </template>
 
-
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick, getCurrentInstance } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getLyric, getSimiSongs, getSimiPlaylists } from '@/api'
 import lyricParser from '@/utils/lrcparse'
@@ -103,14 +96,14 @@ const router = useRouter()
 
 const lyricScrolling = ref({
 
-[WHEEL_TYPE]: false,
-[SCROLL_TYPE]: false
+  [WHEEL_TYPE]: false,
+  [SCROLL_TYPE]: false
 
 })
 const lyricTimer = ref({
 
-[WHEEL_TYPE]: null,
-[SCROLL_TYPE]: null
+  [WHEEL_TYPE]: null,
+  [SCROLL_TYPE]: null
 
 })
 
@@ -121,6 +114,14 @@ const simiPlaylists = ref([])
 const simiSongs = ref([])
 const nolyric = ref(false)
 const scroller = ref(null)
+
+const lyricRefs = ref([])
+
+const setLyricRef = (el) => {
+  if (el) {
+    lyricRefs.value.push(el)
+  }
+}
 
 const updateLyric = async () => {
   const result = await getLyric(musicStore.currentSong.id)
@@ -168,9 +169,10 @@ const updateSong = async () => {
 
 const getPlayerShowCls = () => (musicStore.isPlayerShow ? 'show' : 'hide')
 const getActiveCls = index => (activeLyricIndex.value === index ? 'active' : '')
-const getDiscRotateCls = () => (musicStore.playing ? 'rotate' : 'pause')
+//const getDiscRotateCls = () => (musicStore.playing ? 'rotate' : 'pause')
 
-const onInitScroller = scroller => {
+const onInitScroller = scrollerInstance => {
+  scroller.value = scrollerInstance
   const onScrollStart = type => {
     clearTimer(type)
     lyricScrolling.value[type] = true
@@ -178,20 +180,20 @@ const onInitScroller = scroller => {
   const onScrollEnd = type => {
     clearTimer(type)
     lyricTimer.value[type] = setTimeout(() => {
-      lyricScrolling.value[type] = false
+      lyricScrolling.value[type] = false                        
     }, AUTO_SCROLL_RECOVER_TIME)
   }
-  scroller.on('scrollStart', onScrollStart.bind(null, SCROLL_TYPE))
-
-  scroller.on('scrollEnd', onScrollEnd.bind(null, SCROLL_TYPE))
+  scroller.value.on('scrollStart', onScrollStart.bind(null, SCROLL_TYPE))
+  scroller.value.on("mousewheelStart", onScrollStart.bind(null, WHEEL_TYPE))
+  scroller.value.on('scrollEnd', onScrollEnd.bind(null, SCROLL_TYPE))
+  scroller.value.on("mousewheelEnd", onScrollEnd.bind(null, WHEEL_TYPE))
 }
 
 const scrollToActiveLyric = () => {
   if (activeLyricIndex.value !== -1) {
-    console.log(activeLyricIndex.value)
-    console.log(lyric.value[activeLyricIndex.value])
-    if (lyric && lyric.value[activeLyricIndex.value] && false) {
-      scroller.value.getScroller().scrollToElement(lyric.value[activeLyricIndex.value], 200, 0, true)
+    const activeLyricElement = lyricRefs.value[activeLyricIndex.value]
+    if (activeLyricElement) {
+      scroller.value.getScroller().scrollToElement(activeLyricElement, 200, 0, true)
     }
   }
 }
@@ -317,7 +319,9 @@ watch(
       !lyricScrolling.value[WHEEL_TYPE] &&
       !lyricScrolling.value[SCROLL_TYPE]
     ) {
-      scrollToActiveLyric()
+      nextTick(() => {
+        scrollToActiveLyric()
+      })
     }
   }
 )
@@ -335,6 +339,7 @@ onBeforeUnmount(() => {
   removeResizeListener()
 })
 </script>
+
 
 <style lang="scss" scoped>
 @use 'sass:math';
@@ -562,7 +567,7 @@ $img-outer-d: 300px;
 
           .count {
             margin-left: 4px;
-          }
+          }                               
         }
       }
     }

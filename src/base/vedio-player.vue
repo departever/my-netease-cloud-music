@@ -19,7 +19,6 @@ onMounted(() => {
     videoInit: true,
     lang: "zh-cn",
     width: "100%",
-    // 确保其他必要的配置项也被包含了
   });
 
   player.on("ready", () => {
@@ -38,23 +37,14 @@ watch(() => props.url, (newUrl, oldUrl) => {
       videoInit: true,
       lang: "zh-cn",
       width: "100%",
-      // 确保其他必要的配置项也被包含了
     });
     player.reload();
   }
 });
 </script>
 
-<style scoped>
-.video-player {
-  text-align: center;
-}
-</style>
-
-
-
 <style>
 .xgplayer-error {
-    display: none;
+  display: none;
 }
 </style>

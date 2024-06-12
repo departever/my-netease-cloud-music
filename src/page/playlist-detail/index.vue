@@ -84,8 +84,8 @@ const genSonglist = async (playlist) => {
     );
 };
 
-const onCommentsUpdate = ({ newTotal }) => {
-    tabs.value.splice(COMMENT_IDX, 1, `评论(${newTotal})`);
+const onCommentsUpdate = ({ total }) => {
+    tabs.value.splice(COMMENT_IDX, 1, `评论(${total})`);
 };
 
 const onInputFocus = () => {

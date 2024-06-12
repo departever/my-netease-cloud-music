@@ -31,7 +31,7 @@
                 <p class="title">相关推荐</p>
                 <div class="simi-mvs">
                     <Card :desc="`by ${simiMv.artistName}`" :key="simiMv.id" :name="simiMv.name"
-                        @click="$utils.goMv(simiMv.id)" class="simi-mv-card" v-for="simiMv in simiMvs">
+                        @click="goMv(simiMv.id)" class="simi-mv-card" v-for="simiMv in simiMvs">
                         <template #img-wrap>
                             <MvCard :duration="simiMv.duration" :img="simiMv.cover" :playCount="simiMv.playCount" />
                         </template>
@@ -46,6 +46,7 @@
 import { watchEffect, ref, onMounted, watch } from 'vue';
 import { getMvDetail, getMvUrl, getSimiMv, getArtists } from "@/api";
 import { useMusicStore } from "@/store/music"
+import { goMv } from '@/utils/business';
 
 const props = defineProps({
     id: {

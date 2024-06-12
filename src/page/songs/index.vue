@@ -47,8 +47,8 @@ async function fetchSongs() {
 }
 
 function getSongs(newIndex) {
-  activeTabIndex.value = newIndex;
-  fetchSongs();
+    activeTabIndex.value = newIndex;
+    fetchSongs();
 }
 
 onMounted(() => {
@@ -58,10 +58,10 @@ onMounted(() => {
 
 <style lang="scss">
 .songs {
-  padding: 12px;
+    padding: 12px;
 
-  .header-row {
-    display: none;
-  }
+    .header-row {
+        display: none;
+    }
 }
 </style>
