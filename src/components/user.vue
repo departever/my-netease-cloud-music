@@ -19,7 +19,7 @@
                 <div class="login-help">
                     <p class="help">
                         1、请
-                        <a href="http://music.163.com" target="_blank">点我(http://music.163.com)</a>打开网易云音乐官网
+                        <a href="https://music.163.com" target="_blank">点我(https://music.163.com)</a>打开网易云音乐官网
                     </p>
                     <p class="help">2、点击页面右上角的“登录”</p>
                     <p class="help">3、点击您的头像，进入我的主页</p>

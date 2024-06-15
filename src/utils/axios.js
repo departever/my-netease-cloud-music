@@ -3,7 +3,7 @@ import { ElLoading } from "element-plus";
 import { confirm } from "./confirm.js";
 import { useAxiosLoaderStore } from "@/store/global";
 
-//注意，这个axios.js不能放入$utils中，因为使用了pinia中的东西
+//注意，这个axios.js不能放入$utils中，因为使用了pinia
 
 //这里用的是现成搭好的，后续可以更换为自己的
 const BASE_URL = "https://fetch1.488848.xyz/https://servencmapi-kltu2mmna3l0.runkit.sh";

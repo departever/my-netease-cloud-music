@@ -51,7 +51,6 @@
         offset: getPageOffset(currentPage.value, props.limit),
         ...props.getDataParams
       })
-      console.log(result)
       emit("getDataSuccess", result)
       // 如果传入了滚动的目标对象 分页后自动滚入
       if (props.scrollTarget) {
