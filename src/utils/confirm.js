@@ -1,15 +1,15 @@
-import { createApp, h } from 'vue';
-import Confirm from '@/base/confirm.vue';
+import { createApp, h, defineAsyncComponent } from 'vue';
 
 let instanceCache;
 
-export const confirm = (text, title, onConfirm = () => {}) => {
+export const confirm = async (text, title, onConfirm = () => {}) => {
   if (typeof title === 'function') {
     onConfirm = title;
     title = undefined;
   }
 
   if (!instanceCache) {
+    const Confirm = defineAsyncComponent(() => import('@/base/confirm.vue'));
     instanceCache = createApp({
       setup() {
         return () => h(Confirm, {
