@@ -2,6 +2,10 @@
 
 一个基于vue3的某易云音乐播放器🎵
 
+#### 预览
+
+预览地址：https://music.roxybest.top
+
 #### 需求
 
 - [x] 搜索建议
@@ -26,7 +30,14 @@
 
 - [x] 网易云 uid 登录
 
+#### 后端接口
 
-#### demo展示
+https://gitlab.com/Binaryify/neteasecloudmusicapi
 
-待后期部署实现
+#### 使用
+
+```
+npm install
+npx vite
+```
+
