@@ -1,9 +1,5 @@
 import * as utils from "./index";
-import VueLazyload from "vue3-lazy";
 import { defineAsyncComponent } from 'vue';
-
-const EMPTY_IMG =
-  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
 export default {
   install(app) {
@@ -22,10 +18,5 @@ export default {
     }
 
     app.config.globalProperties.$utils = utils;
-
-    app.use(VueLazyload, {
-      loading: EMPTY_IMG,
-      error: EMPTY_IMG,
-    });
   },
 };

@@ -67,17 +67,14 @@ const onPageChange = async (page) => {
 };
 
 const onTabChange = (index) => {
-    console.log("点击成功......")
     state.activeTabIndex = index; 
     state.currentPage = 0;
     initData();
-    console.log("执行成功......")
 };
 
 onMounted(() => {
     initData();
 });
-
 </script>
 
 <style lang="scss" scoped>

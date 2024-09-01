@@ -12,11 +12,6 @@ import { getBanner } from "@/api";
 
 const banners = ref([]);
 
-// onMounted(async () => {
-//   const { banners: loadedBanners } = await getBanner();
-//   banners.value = loadedBanners;
-// });
-
 onMounted(async () => {
   try {
     const { banners: loadedBanners } = await getBanner();
