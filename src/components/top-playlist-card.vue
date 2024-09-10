@@ -2,7 +2,7 @@
     <div class="wrap" @click="onClickCard">
         <div class="top-playlist-card">
             <div class="img-wrap">
-                <img :src v-lazy="$utils.genImgUrl(img, 280)" />
+                <img v-lazy="$utils.genImgUrl(img, 280)" />
             </div>
             <div class="content">
                 <div class="tag-wrap">
