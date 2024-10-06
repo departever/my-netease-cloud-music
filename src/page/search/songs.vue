@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="jsx">
-import { ref, inject, computed, onMounted } from "vue";
+import { ref, inject, computed } from "vue";
 import { getSearch } from "@/api";
 import SongTable from "@/components/song-table.vue";
 import WithPagination from "@/components/with-pagination.vue";

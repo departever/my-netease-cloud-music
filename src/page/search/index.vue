@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { ref, computed, provide } from "vue";
+import { ref, watch, computed, provide } from "vue";
 import { useAxiosLoaderStore } from "@/store/global";
 
 const props = defineProps({
@@ -51,6 +51,14 @@ const searchRoot = ref({
         count.value = newCount;
     },
 });
+
+watch(
+    () => props.keywords,
+    (newKeywords) => {
+        searchRoot.value.keywords = newKeywords;
+    },
+    { immediate: true }
+);
 
 provide('searchRoot', searchRoot);
 </script>

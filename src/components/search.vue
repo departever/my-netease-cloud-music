@@ -68,6 +68,20 @@ const musicStore = useMusicStore();
 onMounted(async () => {
   const { result: { hots } } = await getSearchHot();
   searchHots.value = hots;
+
+  // 初始化搜索历史时去重
+  const uniqueHistory = [];
+  const seenKeywords = new Set();
+
+  searchHistorys.value.forEach(entry => {
+    if (!seenKeywords.has(entry.first)) {
+      seenKeywords.add(entry.first);
+      uniqueHistory.push(entry);
+    }
+  });
+
+  searchHistorys.value = uniqueHistory;
+  storage.set(SEARCH_HISTORY_KEY, searchHistorys.value);
 });
 
 const onClickInput = () => {
@@ -83,6 +97,7 @@ const onBlur = () => {
 
 const onInput = debounce(async (value) => {
   if (!value.trim()) {
+    suggest.value = {};
     return;
   }
   const { result } = await getSearchSuggest(value);
@@ -101,9 +116,23 @@ const onEnterPress = () => {
 };
 
 const goSearch = (keywords) => {
-  searchHistorys.value.push({ first: keywords });
+  const existingIndex = searchHistorys.value.findIndex(entry => entry.first === keywords);
+
+  if (existingIndex !== -1) {
+    searchHistorys.value.splice(existingIndex, 1);
+  }
+
+  searchHistorys.value.unshift({ first: keywords });
+
+  const MAX_HISTORY = 10;
+  if (searchHistorys.value.length > MAX_HISTORY) {
+    searchHistorys.value = searchHistorys.value.slice(0, MAX_HISTORY);
+  }
+
   storage.set(SEARCH_HISTORY_KEY, searchHistorys.value);
-  router.push(`/search/${keywords}`);
+
+  router.push(`/search/${encodeURIComponent(keywords)}`);
+  
   searchPanelShow.value = false;
 };
 
@@ -178,7 +207,6 @@ const normalizedSuggests = computed(() => {
   ].filter(item => item.data && item.data.length);
 });
 </script>
-
 
 <style lang="scss" scoped>
 .search {

@@ -1,3 +1,7 @@
+<template>
+    <span v-html="highlightedText"></span>
+</template>
+
 <script setup>
 import { computed } from 'vue'
 
@@ -25,10 +29,6 @@ const highlightedText = computed(() => {
 })
 
 </script>
-
-<template>
-    <span v-html="highlightedText"></span>
-</template>
 
 <style lang="scss" scoped>
 .high-light-text {
