@@ -86,7 +86,6 @@ const onLogout = () => {
     confirmTitle.value = '确认操作';
     confirmText.value = '你确定要注销吗？';
     logoutVisible.value = true; // 显示确认框
-    handleConfirm();
 };
 
 const handleConfirm = () => {
