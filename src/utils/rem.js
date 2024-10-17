@@ -6,10 +6,10 @@ let htmlFontSize
 !(function() {
   // 定义一个计算根字体大小的函数
   const calc = function() {
-    const maxFontSize = 18; // 最大字体大小
-    const minFontSize = 14; // 最小字体大小
-    const html = document.getElementsByTagName('html')[0]; // 获取html元素
-    const width = html.clientWidth; // 获取html元素的宽度
+    const maxFontSize = 18;
+    const minFontSize = 14;
+    const html = document.getElementsByTagName('html')[0];
+    const width = html.clientWidth;
     let size = remBase * (width / 1440); // 计算基于remBase的字体大小
     size = Math.min(maxFontSize, size); // 确保字体大小不超过最大值
     size = Math.max(minFontSize, size); // 确保字体大小不小于最小值

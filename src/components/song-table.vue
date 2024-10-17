@@ -20,12 +20,12 @@
           </div>
           <NameDescRenderer v-if="scope.row.alias" :alias="scope.row.alias" :highlightText="highlightText" />
         </div>
-        <div v-if="column.prop === 'artistsText'">
+        <span v-if="column.prop === 'artistsText'">
           {{ scope.row.artistsText }}
-        </div>
-        <div v-if="column.prop === 'albumName'">
+        </span>
+        <span v-if="column.prop === 'albumName'">
           {{ scope.row.albumName }}
-        </div>
+        </span>
         <span v-if="column.prop === 'durationSecond'">
           {{ $utils.formatTime(scope.row.durationSecond) }}
         </span>
@@ -128,6 +128,7 @@ columns.value = [
   .title-th {
     color: var(--font-color-grey2);
     font-weight: normal;
+    text-align: left;
   }
 
   .title-td {

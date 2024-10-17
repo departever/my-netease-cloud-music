@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia'
 
 export const useAxiosLoaderStore = defineStore({
-  id: 'axiosloader', // 唯一的store标识
+  id: 'axiosloader',
   state: () => ({
-    axiosLoading: false, // 初始状态
+    axiosLoading: false,
   }),
   actions: {
     setAxiosLoading(loading) {
-      this.axiosLoading = loading // 直接修改状态
+      this.axiosLoading = loading
     },
   },
 })
