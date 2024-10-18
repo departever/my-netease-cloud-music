@@ -169,7 +169,6 @@ const updateSong = async () => {
 
 const getPlayerShowCls = () => (musicStore.isPlayerShow ? 'show' : 'hide')
 const getActiveCls = index => (activeLyricIndex.value === index ? 'active' : '')
-//const getDiscRotateCls = () => (musicStore.playing ? 'rotate' : 'pause')
 
 const onInitScroller = scrollerInstance => {
   scroller.value = scrollerInstance
