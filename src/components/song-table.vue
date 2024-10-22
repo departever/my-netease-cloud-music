@@ -9,7 +9,7 @@
           <span v-else>{{ pad(scope.$index + 1) }}</span>
         </div>
         <div v-if="column.prop === 'img'" class="img-wrap">
-          <img :src="scope.row.img" />
+          <img v-lazy="scope.row.img" />
           <PlayIcon class="play-icon" />
         </div>
         <div v-if="column.prop === 'name'">
