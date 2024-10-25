@@ -31,6 +31,15 @@ export default defineConfig({
           @use "@/style/mixin.scss" as *;
         `,
       },
+      postcss: {
+        plugins: {
+          autoprefixer: {},
+          'postcss-pxtorem': {
+            rootValue: 14,
+            propList: ['*'],
+          },
+        },
+      },
     },
   },
 });
