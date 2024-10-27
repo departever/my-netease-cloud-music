@@ -1,7 +1,7 @@
 <template>
   <div class="virtual-list" @scroll="handleScroll">
     <div class="virtual-list-inner" :style="{ height: totalHeight + 'px', transform: `translateY(${startIndex * itemHeight}px)` }">
-      <div v-for="(song, index) in visibleSongs" :key="index" class="song-row" @click="onRowClick(song)">
+      <div v-for="(song, index) in visibleSongs" :key="song.id" class="song-row" @click="onRowClick(song)">
         <div class="index-wrap">
           <Icon v-if="isActiveSong(song)" class="horn" type="horn" color="theme" />
           <span v-else>{{ pad(startIndex + index + 1) }}</span>
@@ -73,7 +73,7 @@ watch(totalHeight, (newValue) => {
 
 <style lang="scss">
 .virtual-list {
-  height: 800px; // 根据需求调整
+  height: 800px;
   overflow-y: auto;
   position: relative;
   background-color: var(--body-bgcolor) !important;
@@ -86,26 +86,26 @@ watch(totalHeight, (newValue) => {
   .song-row {
     display: flex;
     align-items: center;
-    height: 60px; // 行高
-    padding: 10px; // 原先样式中的内边距
-    margin-bottom: 10px; // 添加行间距
-    border-bottom: 1px solid var(--border-color); // 可添加底部边框
-    background-color: var(--body-bgcolor) !important; // 背景色
-    color: var(--font-color); // 字体颜色
+    height: 60px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--body-bgcolor) !important;
+    color: var(--font-color);
 
     &:hover {
-      background-color: var(--playlist-hover-bgcolor) !important; // 鼠标悬停效果
+      background-color: var(--playlist-hover-bgcolor) !important;
     }
 
     &.song-active {
-      color: $theme-color; // 激活行的样式
+      color: $theme-color;
     }
   }
 
   .index-wrap { 
     text-align: center;
     color: var(--font-color-grey-shallow);
-    width: 70px; // 与原先的宽度保持一致
+    width: 70px;
   }
 
   .img-wrap {
@@ -123,7 +123,7 @@ watch(totalHeight, (newValue) => {
   }
 
   .song-table-name-cell {
-    flex: 1; // 根据需要调整
+    flex: 1;
     display: flex;
     align-items: center;
     overflow: hidden;
@@ -139,7 +139,7 @@ watch(totalHeight, (newValue) => {
   .artists-text,
   .album-name,
   .duration {
-    flex: 0 0 120px; // 固定宽度，保持一致性
+    flex: 0 0 120px;
     margin-right: 20px;
     overflow: hidden;
     text-overflow: ellipsis;
