@@ -1,149 +1,189 @@
 <template>
-  <div class="virtual-list" @scroll="handleScroll">
-    <div class="virtual-list-inner" :style="{ height: totalHeight + 'px', transform: `translateY(${startIndex * itemHeight}px)` }">
-      <div v-for="(song, index) in visibleSongs" :key="song.id" class="song-row" @click="onRowClick(song)">
-        <div class="index-wrap">
-          <Icon v-if="isActiveSong(song)" class="horn" type="horn" color="theme" />
-          <span v-else>{{ pad(startIndex + index + 1) }}</span>
-        </div>
-        <div class="img-wrap">
-          <img :src="song.img" />
-          <PlayIcon class="play-icon" />
-        </div>
-        <div class="song-table-name-cell">
-          <HighlightText class="song-table-name" :text="song.name" :highlight-text="highlightText" />
-          <Icon v-if="song.mvId" class="mv-icon" @click="goMvWithCheck(song.mvId)" type="mv" color="theme" :size="18" />
-        </div>
-        <span class="artists-text">{{ song.artistsText }}</span>
-        <span class="album-name">{{ song.albumName }}</span>
-        <span class="duration">{{ $utils.formatTime(song.durationSecond) }}</span>
-      </div>
-    </div>
-  </div>
+    <el-table v-if="songs.length" :data="songs" class="song-table" :cell-class-name="tableCellClassName"
+        header-cell-class-name="title-th" style="width: 99.9%" @row-click="onRowClick">
+        <el-table-column v-for="(column, index) in showColumns" :key="index" :prop="column.prop" :label="column.label"
+            :width="column.width">
+            <template v-slot:default="scope">
+                <div v-if="column.prop === 'index'" class="index-wrap">
+                    <Icon v-if="isActiveSong(scope.row)" class="horn" type="horn" color="theme" />
+                    <span v-else>{{ pad(scope.$index + 1) }}</span>
+                </div>
+                <div v-if="column.prop === 'img'" class="img-wrap">
+                    <img v-lazy="scope.row.img" />
+                    <PlayIcon class="play-icon" />
+                </div>
+                <div v-if="column.prop === 'name'">
+                    <div class="song-table-name-cell">
+                        <HighlightText class="song-table-name" :text="scope.row.name" :highlight-text="highlightText" />
+                        <Icon v-if="scope.row.mvId" class="mv-icon" @click="goMvWithCheck(scope.row.mvId)" type="mv"
+                            color="theme" :size="18" />
+                    </div>
+                    <NameDescRenderer v-if="scope.row.alias" :alias="scope.row.alias" :highlightText="highlightText" />
+                </div>
+                <span v-if="column.prop === 'artistsText'">
+                    {{ scope.row.artistsText }}
+                </span>
+                <span v-if="column.prop === 'albumName'">
+                    {{ scope.row.albumName }}
+                </span>
+                <span v-if="column.prop === 'durationSecond'">
+                    {{ $utils.formatTime(scope.row.durationSecond) }}
+                </span>
+            </template>
+        </el-table-column>
+    </el-table>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { useMusicStore } from '@/store/music';
+import { ElTable, ElTableColumn } from 'element-plus';
 import { pad } from '@/utils';
-import { goMvWithCheck } from '@/utils/business';
+import { goMvWithCheck } from '@/utils/business'
 
 const props = defineProps({
-  hideColumns: {
-    type: Array,
-    default: () => [],
-  },
-  songs: {
-    type: Array,
-    default: () => [],
-  },
-  highlightText: {
-    type: String,
-    default: "",
-  },
+    hideColumns: {
+        type: Array,
+        default: () => [],
+    },
+    songs: {
+        type: Array,
+        default: () => [],
+    },
+    highlightText: {
+        type: String,
+        default: "",
+    },
+    renderNameDesc: {
+        type: Function,
+    },
 });
 
 const musicStore = useMusicStore();
 const currentSong = computed(() => musicStore.currentSong);
 const isActiveSong = (song) => song.id === currentSong.value.id;
 
-const itemHeight = 60; // 每一行的高度
-const visibleCount = 10; // 可视区域显示的项数
-const totalHeight = computed(() => props.songs.length * itemHeight);
+const columns = ref([]);
 
-const startIndex = ref(0);
-const visibleSongs = computed(() => {
-  return props.songs.slice(startIndex.value, startIndex.value + visibleCount);
+const showColumns = computed(() => {
+    const hideColumns = props.hideColumns.slice();
+    const reference = props.songs[0];
+    const { img } = reference;
+    if (!img) {
+        hideColumns.push('img');
+    }
+    return columns.value.filter(column => {
+        return !hideColumns.find(hideColumn => hideColumn === column.prop);
+    });
 });
-
-const handleScroll = (event) => {
-  const scrollTop = event.target.scrollTop;
-  startIndex.value = Math.floor(scrollTop / itemHeight);
-};
 
 const onRowClick = (song) => {
-  musicStore.startSong(song);
-  musicStore.setPlaylist(props.songs);
+    musicStore.startSong(song);
+    musicStore.setPlaylist(props.songs);
 };
 
-watch(totalHeight, (newValue) => {
-  console.log('Total Height:', newValue);
-});
+const tableCellClassName = ({ row, columnIndex }) => {
+    let retCls = [];
+    if (isActiveSong(row) && columnIndex === showColumns.value.findIndex(({ prop }) => prop === 'name')) {
+        retCls.push('song-active');
+    }
+    return retCls.join(' ');
+};
+
+// 定义columns
+columns.value = [
+    {
+        prop: "index",
+        label: "",
+        width: "70",
+    },
+    {
+        prop: "img",
+        label: " ",
+        width: "100",
+    },
+    {
+        prop: "name",
+        label: "音乐标题",
+        className: "title-td",
+    },
+    {
+        prop: "artistsText",
+        label: "歌手",
+    },
+    {
+        prop: "albumName",
+        label: "专辑",
+    },
+    {
+        prop: "durationSecond",
+        label: "时长",
+        width: "100",
+    },
+];
 </script>
 
 <style lang="scss">
-.virtual-list {
-  height: 800px;
-  overflow-y: auto;
-  position: relative;
-  background-color: var(--body-bgcolor) !important;
-
-  .virtual-list-inner {
-    position: absolute;
-    width: 100%;
-  }
-
-  .song-row {
-    display: flex;
-    align-items: center;
-    height: 60px;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
-    background-color: var(--body-bgcolor) !important;
-    color: var(--font-color);
-
-    &:hover {
-      background-color: var(--playlist-hover-bgcolor) !important;
+.song-table {
+    .title-th {
+        color: var(--font-color-grey2);
+        font-weight: normal;
+        text-align: left;
     }
 
-    &.song-active {
-      color: $theme-color;
-    }
-  }
-
-  .index-wrap { 
-    text-align: center;
-    color: var(--font-color-grey-shallow);
-    width: 70px;
-  }
-
-  .img-wrap {
-    position: relative;
-    @include img-wrap(60px);
-    margin-right: 20px;
-
-    img {
-      border-radius: 4px;
+    .title-td {
+        color: var(--font-color-white);
     }
 
-    .play-icon {
-      @include abs-center;
+    .padding-space {
+        padding-left: 24px;
     }
-  }
 
-  .song-table-name-cell {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    .song-active {
+        color: $theme-color;
 
-    .mv-icon {
-      width: 24px;
-      margin-left: 4px;
+        .high-light-text {
+            color: $theme-color;
+        }
     }
-  }
 
-  .artists-text,
-  .album-name,
-  .duration {
-    flex: 0 0 120px;
-    margin-right: 20px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+    .index-wrap {
+        text-align: center;
+        color: var(--font-color-grey-shallow);
+    }
+
+    .img-wrap {
+        position: relative;
+        @include img-wrap(60px);
+
+        img {
+            border-radius: 4px;
+        }
+
+        .play-icon {
+            @include abs-center;
+        }
+    }
+
+    .high-light-text {
+        color: $blue;
+    }
+
+    .song-table-name-cell {
+        @include text-ellipsis;
+        display: flex;
+        align-items: center;
+        flex: 0 0 24px;
+
+        .song-table-name {
+            overflow: hidden;
+            @include text-ellipsis;
+        }
+
+        .mv-icon {
+            width: 24px;
+            margin-left: 4px;
+        }
+    }
 }
 </style>

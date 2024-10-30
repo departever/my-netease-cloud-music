@@ -17,20 +17,14 @@
 
 
 <script setup>
-/**
- * 左边是图片 右边上下两行文字的卡片
- */
-// 定义props
 const props = defineProps({
     img: String,
     name: String,
     desc: String
 })
 
-// 定义事件
 const emit = defineEmits(['click'])
 
-// 点击事件处理函数
 const onClick = (e) => {
     emit('click', e)
 }

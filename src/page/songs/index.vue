@@ -3,7 +3,7 @@
         <div class="tabs">
             <Tabs :tabs="tabs" @tabChange="getSongs" align="right" type="small" :active="activeTabIndex" />
         </div>
-        <SongTable :songs="songs" header-row-class-name="header-row" />
+        <VirtualList :songs="songs" header-row-class-name="header-row" />
     </div>
 </template>
 
@@ -11,7 +11,7 @@
 import { ref, onMounted } from 'vue';
 import { getTopSongs } from "@/api";
 import { createSong } from "@/utils/business";
-import SongTable from "@/components/song-table.vue";
+import VirtualList from "@/components/vitural-list.vue";
 
 const activeTabIndex = ref(0);
 const songs = ref([]);
