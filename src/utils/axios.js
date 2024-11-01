@@ -18,7 +18,7 @@ mixinLoading(request.interceptors);
 function createBaseInstance() {
   const instance = axios.create({
     baseURL: BASE_URL,
-    timeout: 10000
+    timeout: 15000
   });
 
   instance.interceptors.response.use(handleResponse, handleError);

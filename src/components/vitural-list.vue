@@ -48,7 +48,7 @@ const currentSong = computed(() => musicStore.currentSong);
 const isActiveSong = (song) => song.id === currentSong.value.id;
 
 const itemHeight = 60; // 每一行的高度
-const visibleCount = 10; // 可视区域显示的项数
+const visibleCount = 8; // 可视区域显示的项数
 const totalHeight = computed(() => props.songs.length * itemHeight);
 
 const startIndex = ref(0);
@@ -57,26 +57,38 @@ const visibleSongs = computed(() => {
 });
 
 const handleScroll = (event) => {
-  const scrollTop = event.target.scrollTop;
-  startIndex.value = Math.floor(scrollTop / itemHeight);
-};
+  let scrollTop = event.target.scrollTop;
+  const maxScrollTop = totalHeight.value - (itemHeight * visibleCount);
+  
+  // 限制 scrollTop 不超过最大滚动高度
+  if (scrollTop > maxScrollTop) {
+    scrollTop = maxScrollTop;
+    event.target.scrollTop = maxScrollTop; // 强制将滚动条位置回到最大滚动位置
+  }
+
+  const newStartIndex = Math.floor(Math.min(scrollTop, maxScrollTop) / itemHeight);
+
+  startIndex.value = Math.min(newStartIndex, props.songs.length - visibleCount);
+}
 
 const onRowClick = (song) => {
   musicStore.startSong(song);
   musicStore.setPlaylist(props.songs);
 };
-
-watch(totalHeight, (newValue) => {
-  console.log('Total Height:', newValue);
-});
 </script>
 
 <style lang="scss">
 .virtual-list {
-  height: 800px;
-  overflow-y: auto;
+  height: 700px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   position: relative;
   background-color: var(--body-bgcolor) !important;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .virtual-list-inner {
     position: absolute;
