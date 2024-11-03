@@ -9,7 +9,7 @@
             <div class="img-outer-border" ref="disc">
               <div :class="{ paused: !playing }" class="img-outer" ref="discRotate">
                 <div class="img-wrap">
-                  <img v-lazy="$utils.genImgUrl(musicStore.currentSong.img, 400)" />
+                  <img :src="$utils.genImgUrl(musicStore.currentSong.img, 400)" />
                 </div>
               </div>
             </div>

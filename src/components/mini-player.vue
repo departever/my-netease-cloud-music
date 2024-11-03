@@ -6,7 +6,7 @@
       <template v-if="hasCurrentSong">
         <div @click="togglePlayerShow" class="img-wrap">
           <div class="mask"></div>
-          <img v-lazy="$utils.genImgUrl(currentSong.img, 80)" class="blur" />
+          <img :src="$utils.genImgUrl(currentSong.img, 80)" class="blur" />
           <div class="player-control">
             <Icon :size="24" :type="playControlIcon" color="white" />
           </div>
