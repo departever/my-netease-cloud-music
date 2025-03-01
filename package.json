@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite dev & electron .",
     "build": "vite build",
-    "preview": "vite preview"
+    "electron:start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "dependencies": {
     "@better-scroll/core": "^2.5.1",
@@ -14,6 +16,7 @@
     "@better-scroll/scroll-bar": "^2.5.1",
     "axios": "^1.6.8",
     "better-scroll": "^2.5.1",
+    "electron": "latest",
     "element-plus": "^2.6.1",
     "good-storage": "^1.1.1",
     "pinia": "^2.1.7",
@@ -25,10 +28,35 @@
     "@vitejs/plugin-vue": "^5.0.4",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
     "autoprefixer": "^10.4.19",
+    "electron": "^34.3.0",
+    "electron-builder": "^25.1.8",
     "postcss-pxtorem": "^6.1.0",
     "sass": "^1.72.0",
     "unplugin-auto-import": "^0.17.5",
     "unplugin-vue-components": "^0.26.0",
     "vite": "^5.1.6"
-  }
+  },
+  "build": {
+    "appId": "com.example.musicapp",
+    "productName": "MusicApp",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "src/main/**/*",
+      "public/music.png"
+    ],
+    "mac": {
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "public/music.png"
+    },
+    "linux": {
+      "target": "deb"
+    }
+  },
+  "main": "src/main/main.cjs"
 }

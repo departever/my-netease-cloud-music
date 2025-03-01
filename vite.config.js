@@ -42,4 +42,9 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    outDir: 'dist',
+  },
+  // 配置 base 为相对路径，避免打包后资源路径错误
+  base: './'
 });
