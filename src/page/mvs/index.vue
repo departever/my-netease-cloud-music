@@ -2,20 +2,20 @@
     <div class="mvs" ref="page">
         <div class="tabs-wrap">
             <span class="tabs-type">地区：</span>
-            <Tabs :tabs="areaTabs" class="tabs" type="split" v-model="activeAreaTabIndex" />
+            <Tabs :tabs="areaTabs" class="tabs" type="split" :active="activeAreaTabIndex" @tabChange="activeAreaTabIndex = $event"/>
         </div>
         <div class="tabs-wrap">
             <span class="tabs-type">类型：</span>
-            <Tabs :tabs="typeTabs" class="tabs" type="split" v-model="activeTypeTabIndex" />
+            <Tabs :tabs="typeTabs" class="tabs" type="split" :active="activeTypeTabIndex" @tabChange="activeTypeTabIndex = $event"/>
         </div>
         <div class="tabs-wrap">
             <span class="tabs-type">排序：</span>
-            <Tabs :tabs="sortTabs" class="tabs" type="split" v-model="activeSortTabIndex" />
+            <Tabs :tabs="sortTabs" class="tabs" type="split" :active="activeSortTabIndex" @tabChange="activeSortTabIndex = $event"/>
         </div>
-        <WithPagination :getData="getAllMvs" :getDataParams="getDataParams()" :limit="40" :scrollTarget="scrollTarget"
+        <WithPagination :getData="getAllMvs" :getDataParams="getDataParams" :limit="40" :scrollTarget="page"
             :total="mvCount" @getDataSuccess="onGetMvs">
             <ul class="list-wrap">
-                <li :key="mv.id" class="list-item" v-for="mv in mvs">
+                <li v-for="mv in mvs" :key="mv.id" class="list-item">
                     <MvCard :author="mv.artistName" :duration="mv.duration" :id="mv.id" :img="mv.cover" :name="mv.name"
                         :playCount="mv.playCount" />
                 </li>
@@ -25,38 +25,38 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { getAllMvs } from "@/api";
 import MvCard from "@/components/mv-card.vue";
 import WithPagination from "@/components/with-pagination.vue";
 
-const areaTabs = ["全部", "内地", "港台", "欧美", "日本", "韩国"];
-const typeTabs = ["全部", "官方版", "原声", "现场版", "网易出品"];
-const sortTabs = ["上升最快", "最热", "最新"];
+const areaTabs = ["全部", "内地", "港台", "欧美", "日本", "韩国"]
+const typeTabs = ["全部", "官方版", "原声", "现场版", "网易出品"]
+const sortTabs = ["上升最快", "最热", "最新"]
 
-const activeAreaTabIndex = ref(0);
-const activeTypeTabIndex = ref(0);
-const activeSortTabIndex = ref(0);
-const mvs = ref([]);
-const mvCount = ref(0);
+const mvs = ref([])
+const mvCount = ref(0)
+const activeAreaTabIndex = ref(0)
+const activeTypeTabIndex = ref(0)
+const activeSortTabIndex = ref(0)
+const page = ref(null)
 
-const getDataParams = () => {
-    return {
-        area: areaTabs[activeAreaTabIndex.value],
-        order: sortTabs[activeSortTabIndex.value],
-        type: typeTabs[activeTypeTabIndex.value]
-    };
-};
-
-const scrollTarget = ref(null);
+const getDataParams = computed(() => ({
+  area: areaTabs[activeAreaTabIndex.value],
+  order: sortTabs[activeSortTabIndex.value],
+  type: typeTabs[activeTypeTabIndex.value]
+}))
 
 const onGetMvs = ({ data, count }) => {
-    mvs.value = data;
-    if (count) {
-        mvCount.value = count;
-    }
-};
+  mvs.value = data
+  if (count) {
+    mvCount.value = count
+  }
+}
 
+onMounted(() => {
+  getAllMvs()
+})
 </script>
 
 
