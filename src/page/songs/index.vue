@@ -58,7 +58,15 @@ onMounted(() => {
 
 <style lang="scss">
 .songs {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     padding: 12px;
+    box-sizing: border-box;
+
+    .tabs {
+        flex-shrink: 0; // tabs 不被压缩
+    }
 
     .header-row {
         display: none;
