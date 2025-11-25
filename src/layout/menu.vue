@@ -5,7 +5,7 @@
       <div :key="index" class="menu-block" v-for="(menu, index) in menusWithPlaylist">
         <p class="menu-block-title" v-if="menu.title">{{ menu.title }}</p>
         <ul class="menu-list">
-          <router-link :key="index" :to="item.path" v-slot="{ navigate, href, isActive, isExactActive }" v-for="(item, index) in menu.children">
+          <router-link :key="index" :to="item.path" custom v-slot="{ navigate, href, isActive, isExactActive }" v-for="(item, index) in menu.children">
             <li :class="['menu-item', { 'menu-item-active': isActive || isExactActive }]" @click="navigate">
               <Icon :size="16" :type="item.meta.icon" class="iconfont" />
               <span class="menu-title">{{ item.meta.title }}</span>
@@ -77,6 +77,7 @@ onMounted(() => {
           @include text-ellipsis;
           padding: 12px 18px;
           cursor: pointer;
+          color: var(--font-color);
 
           &:hover {
             background: var(--menu-item-hover-bg);
