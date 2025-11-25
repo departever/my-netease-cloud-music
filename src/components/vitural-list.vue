@@ -1,38 +1,29 @@
 <template>
-  <div class="virtual-list" @scroll="handleScroll">
-    <div class="virtual-list-inner" :style="{ height: totalHeight + 'px', transform: `translateY(${startIndex * itemHeight}px)` }">
-      <div v-for="(song, index) in visibleSongs" :key="song.id" class="song-row" @click="onRowClick(song)">
-        <div class="index-wrap">
-          <Icon v-if="isActiveSong(song)" class="horn" type="horn" color="theme" />
-          <span v-else>{{ pad(startIndex + index + 1) }}</span>
-        </div>
-        <div class="img-wrap">
-          <img :src="song.img" />
-          <PlayIcon class="play-icon" />
-        </div>
-        <div class="song-table-name-cell">
-          <HighlightText class="song-table-name" :text="song.name" :highlight-text="highlightText" />
-          <Icon v-if="song.mvId" class="mv-icon" @click="goMvWithCheck(song.mvId)" type="mv" color="theme" :size="18" />
-        </div>
-        <span class="artists-text">{{ song.artistsText }}</span>
-        <span class="album-name">{{ song.albumName }}</span>
-        <span class="duration">{{ $utils.formatTime(song.durationSecond) }}</span>
-      </div>
+  <div ref="containerRef" class="virtual-list" @scroll="handleScroll">
+    <!-- 占位层：撑起滚动高度 -->
+    <div class="virtual-list-spacer" :style="{ height: totalHeight + 'px' }"></div>
+    <!-- 内容层：绝对定位，只渲染可见项目 -->
+    <div class="virtual-list-content" :style="{ transform: `translateY(${offsetY}px)` }">
+      <SongRow
+        v-for="(song, index) in visibleSongs"
+        :key="song.id"
+        :song="song"
+        :index="startIndex + index + 1"
+        :is-active="isActiveSong(song)"
+        :highlight-text="highlightText"
+        @click="onRowClick(song)"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useMusicStore } from '@/store/music';
-import { pad } from '@/utils';
-import { goMvWithCheck } from '@/utils/business';
+import { debounce } from '@/utils';
+import SongRow from '@/components/song-row.vue';
 
 const props = defineProps({
-  hideColumns: {
-    type: Array,
-    default: () => [],
-  },
   songs: {
     type: Array,
     default: () => [],
@@ -41,35 +32,85 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  itemHeight: {
+    type: Number,
+    default: 60, // 每行高度
+  },
+  buffer: {
+    type: Number,
+    default: 2, // 上下缓冲区数量，防止滚动白屏
+  },
 });
+
+const containerRef = ref(null);
+const containerHeight = ref(480); // 容器实际高度，动态获取
 
 const musicStore = useMusicStore();
 const currentSong = computed(() => musicStore.currentSong);
 const isActiveSong = (song) => song.id === currentSong.value.id;
 
-const itemHeight = 60; // 每一行的高度
-const visibleCount = 8; // 可视区域显示的项数
-const totalHeight = computed(() => props.songs.length * itemHeight);
+// 使用 ResizeObserver 监听容器高度变化
+let resizeObserver = null;
 
-const startIndex = ref(0);
-const visibleSongs = computed(() => {
-  return props.songs.slice(startIndex.value, startIndex.value + visibleCount);
+// 防抖处理 resize
+const handleResize = debounce((height) => {
+  containerHeight.value = height;
+}, 100);
+
+onMounted(() => {
+  if (containerRef.value) {
+    // 初始获取高度
+    containerHeight.value = containerRef.value.clientHeight;
+    
+    // 监听高度变化
+    resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        handleResize(entry.contentRect.height);
+      }
+    });
+    resizeObserver.observe(containerRef.value);
+  }
 });
 
-const handleScroll = (event) => {
-  let scrollTop = event.target.scrollTop;
-  const maxScrollTop = totalHeight.value - (itemHeight * visibleCount);
-  
-  // 限制 scrollTop 不超过最大滚动高度
-  if (scrollTop > maxScrollTop) {
-    scrollTop = maxScrollTop;
-    event.target.scrollTop = maxScrollTop; // 强制将滚动条位置回到最大滚动位置
+onUnmounted(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect();
   }
+});
 
-  const newStartIndex = Math.floor(Math.min(scrollTop, maxScrollTop) / itemHeight);
+// 可见项目数量（根据容器高度动态计算）
+const visibleCount = computed(() => Math.ceil(containerHeight.value / props.itemHeight));
 
-  startIndex.value = Math.min(newStartIndex, props.songs.length - visibleCount);
-}
+// 列表总高度
+const totalHeight = computed(() => props.songs.length * props.itemHeight);
+
+// 当前滚动位置
+const scrollTop = ref(0);
+
+// 起始索引（考虑缓冲区）
+const startIndex = computed(() => {
+  const index = Math.floor(scrollTop.value / props.itemHeight) - props.buffer;
+  return Math.max(0, index);
+});
+
+// 结束索引（考虑缓冲区）
+const endIndex = computed(() => {
+  const index = startIndex.value + visibleCount.value + props.buffer * 2;
+  return Math.min(props.songs.length, index);
+});
+
+// 内容层的偏移量
+const offsetY = computed(() => startIndex.value * props.itemHeight);
+
+// 可见的歌曲列表
+const visibleSongs = computed(() => {
+  return props.songs.slice(startIndex.value, endIndex.value);
+});
+
+// 滚动处理
+const handleScroll = (event) => {
+  scrollTop.value = event.target.scrollTop;
+};
 
 const onRowClick = (song) => {
   musicStore.startSong(song);
@@ -77,85 +118,30 @@ const onRowClick = (song) => {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .virtual-list {
-  height: 700px;
-  overflow-y: scroll;
+  flex: 1; // 自动填充剩余空间
+  height: 0; // 配合 flex: 1 使用，防止撑开父容器
+  min-height: 200px; // 最小高度
+  overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
   position: relative;
-  background-color: var(--body-bgcolor) !important;
+  background-color: var(--body-bgcolor);
 
   &::-webkit-scrollbar {
     display: none;
   }
 
-  .virtual-list-inner {
+  .virtual-list-spacer {
+    pointer-events: none;
+  }
+
+  .virtual-list-content {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-  }
-
-  .song-row {
-    display: flex;
-    align-items: center;
-    height: 60px;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
-    background-color: var(--body-bgcolor) !important;
-    color: var(--font-color);
-
-    &:hover {
-      background-color: var(--playlist-hover-bgcolor) !important;
-    }
-
-    &.song-active {
-      color: $theme-color;
-    }
-  }
-
-  .index-wrap { 
-    text-align: center;
-    color: var(--font-color-grey-shallow);
-    width: 70px;
-  }
-
-  .img-wrap {
-    position: relative;
-    @include img-wrap(60px);
-    margin-right: 20px;
-
-    img {
-      border-radius: 4px;
-    }
-
-    .play-icon {
-      @include abs-center;
-    }
-  }
-
-  .song-table-name-cell {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    .mv-icon {
-      width: 24px;
-      margin-left: 4px;
-    }
-  }
-
-  .artists-text,
-  .album-name,
-  .duration {
-    flex: 0 0 120px;
-    margin-right: 20px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 }
 </style>

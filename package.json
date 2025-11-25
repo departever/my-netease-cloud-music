@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev & electron .",
+    "dev": "vite dev",
     "build": "vite build",
     "electron:start": "electron .",
     "pack": "electron-builder --dir",

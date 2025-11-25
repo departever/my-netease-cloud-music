@@ -26,14 +26,12 @@ declare module 'vue' {
     RoutesHistory: typeof import('./src/components/routes-history.vue')['default']
     Search: typeof import('./src/components/search.vue')['default']
     SongCard: typeof import('./src/components/song-card.vue')['default']
+    SongRow: typeof import('./src/components/song-row.vue')['default']
     SongTable: typeof import('./src/components/song-table.vue')['default']
     Theme: typeof import('./src/components/theme.vue')['default']
     TopPlaylistCard: typeof import('./src/components/top-playlist-card.vue')['default']
     User: typeof import('./src/components/user.vue')['default']
     VituralList: typeof import('./src/components/vitural-list.vue')['default']
     WithPagination: typeof import('./src/components/with-pagination.vue')['default']
-  }
-  export interface ComponentCustomProperties {
-    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }
