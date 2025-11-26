@@ -1,4 +1,3 @@
-import { request } from '@/utils/axios'
+import { request } from '@/utils/axios';
 
-export const getListDetail = params =>
-  request.get('/playlist/detail', { params })
+export const getListDetail = params => request.get('/playlist/detail', { params });

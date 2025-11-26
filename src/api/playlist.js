@@ -1,8 +1,9 @@
-import { request, requestWithoutLoading } from '@/utils/axios'
+import { request, requestWithoutLoading } from '@/utils/axios';
 
 // 获取歌单
-export const getPlaylists = (params) => request.get('/top/playlist', { params })
+export const getPlaylists = params => request.get('/top/playlist', { params });
 // 精品歌单
-export const getTopPlaylists = (params) => request.get('/top/playlist/highquality', { params })
+export const getTopPlaylists = params => request.get('/top/playlist/highquality', { params });
 // 获取相似歌单
-export const getSimiPlaylists = (id, option) => requestWithoutLoading.get(`/simi/playlist?id=${id}`, option)
+export const getSimiPlaylists = (id, option) =>
+  requestWithoutLoading.get(`/simi/playlist?id=${id}`, option);

@@ -1,0 +1,6 @@
+dist
+node_modules
+release
+*.d.ts
+package-lock.json
+

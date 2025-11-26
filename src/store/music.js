@@ -1,9 +1,9 @@
-import { defineStore } from "pinia";
-import storage from "good-storage";
-import { PLAY_HISTORY_KEY, playModeMap, isDef, shallowEqual } from "@/utils";
-import { getSongImg } from "@/utils/business";
+import { defineStore } from 'pinia';
+import storage from 'good-storage';
+import { PLAY_HISTORY_KEY, playModeMap, isDef, shallowEqual } from '@/utils';
+import { getSongImg } from '@/utils/business';
 
-export const useMusicStore = defineStore("music", {
+export const useMusicStore = defineStore('music', {
   state: () => ({
     // 当前播放歌曲
     currentSong: {},
@@ -89,8 +89,8 @@ export const useMusicStore = defineStore("music", {
         return currentIndex;
       }
       let index = Math.round(Math.random() * (playlist.length - 1));
-      if (index === currentIndex) {
-        index = this.getRandomIndex(playlist, currentIndex);
+      while (index === currentIndex) {
+        index = Math.round(Math.random() * (playlist.length - 1));
       }
       return index;
     },
@@ -120,7 +120,7 @@ export const useMusicStore = defineStore("music", {
       const oldPlaylist = this.playlist;
       this.playlist = playlist;
       // If the playlist is not shown and the old playlist is different from the new one, show the prompt
-      if (!isPlaylistShow && !shallowEqual(oldPlaylist, playlist, "id")) {
+      if (!isPlaylistShow && !shallowEqual(oldPlaylist, playlist, 'id')) {
         this.isPlaylistPromptShow = true;
         // Replace setTimeout with a Pinia-friendly approach if needed
         setTimeout(() => {

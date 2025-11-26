@@ -110,11 +110,7 @@ $input-height: 24px;
 }
 
 .el-input {
-  @include el-input-style(
-    var(--input-color),
-    var(--input-bgcolor),
-    var(--font-color-grey-shallow)
-  );
+  @include el-input-style(var(--input-color), var(--input-bgcolor), var(--font-color-grey-shallow));
 }
 
 // pagination
@@ -143,7 +139,6 @@ $input-height: 24px;
   .el-dialog__headerbtn:hover .el-dialog__close {
     color: $theme-color;
   }
-  
 }
 
 // button

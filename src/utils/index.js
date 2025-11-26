@@ -1,11 +1,11 @@
-export * from './common'
+export * from './common';
 
-export * from './rem'
+export * from './rem';
 
-export * from './confirm'
+export * from './confirm';
 
-export * from './dom'
+export * from './dom';
 
-export * from './config'
+export * from './config';
 
-export * from './lrcparse'
+export * from './lrcparse';

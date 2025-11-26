@@ -1,4 +1,4 @@
-import variablesWhite from './variables-white'
+import variablesWhite from './variables-white';
 
 export default {
   ...variablesWhite,
@@ -9,4 +9,4 @@ export default {
   ['--header-input-bgcolor']: '#DD6861',
   ['--header-input-placeholder-color']: '#EFB6B2',
   ['--round-hover-bgcolor']: '#CA4841',
-}
+};

@@ -30,123 +30,124 @@
   </div>
 </template>
 
-
 <script setup>
-import { ref, computed } from 'vue';
-import { useMusicStore } from '@/store/music';
-import { useRouter } from 'vue-router';
-import Theme from "@/components/theme.vue";
-import Search from "@/components/search.vue";
-import RoutesHistory from "@/components/routes-history.vue";
-import { requestFullScreen, exitFullscreen, isFullscreen } from "@/utils";
+  import { ref, computed } from 'vue';
+  import { useMusicStore } from '@/store/music';
+  import { useRouter } from 'vue-router';
+  import Theme from '@/components/theme.vue';
+  import Search from '@/components/search.vue';
+  import RoutesHistory from '@/components/routes-history.vue';
+  import { requestFullScreen, exitFullscreen, isFullscreen } from '@/utils';
 
-const musicStore = useMusicStore();
-const router = useRouter();
+  const musicStore = useMusicStore();
+  const router = useRouter();
 
-const isPlayerShow = computed(() => musicStore.isPlayerShow);
+  const isPlayerShow = computed(() => musicStore.isPlayerShow);
 
-const onClickLogo = () => {
-  router.push("/discovery");
-};
+  const onClickLogo = () => {
+    router.push('/discovery');
+  };
 
-const onClickDown = () => {
-  musicStore.setPlayerShow(false);
-};
+  const onClickDown = () => {
+    musicStore.setPlayerShow(false);
+  };
 
-const fullscreen = () => {
-  requestFullScreen(document.documentElement);
-};
+  const fullscreen = () => {
+    requestFullScreen(document.documentElement);
+  };
 
-const toggleFullscreen = () => {
-  musicStore.isFullscreen = !musicStore.isFullscreen;
-};
+  const toggleFullscreen = () => {
+    musicStore.isFullscreen = !musicStore.isFullscreen;
+  };
 </script>
 
 <style lang="scss" scoped>
-@import "../style/element-overwrite";
+  @import '../style/element-overwrite';
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  height: $header-height;
-  background-color: var(--header-bgcolor);
-  padding-right: 36px;
-
-  @include el-input-theme(var(--header-input-color),
-    var(--header-input-bgcolor),
-    var(--header-input-placeholder-color));
-
-  :deep(iconfont) {
-    color: var(--header-font-color);
-  }
-
-  .left {
-    padding: 14px 14px 0 8px;
+  .header {
     display: flex;
+    justify-content: space-between;
+    height: $header-height;
+    background-color: var(--header-bgcolor);
+    padding-right: 36px;
 
-    .font-weight {
-      white-space: nowrap;
+    @include el-input-theme(
+      var(--header-input-color),
+      var(--header-input-bgcolor),
+      var(--header-input-placeholder-color)
+    );
+
+    :deep(iconfont) {
+      color: var(--header-font-color);
     }
 
-    .buttons {
+    .left {
+      padding: 14px 14px 0 8px;
       display: flex;
 
-      &:hover {
-        .mac-button>i {
-          opacity: 1;
+      .font-weight {
+        white-space: nowrap;
+      }
+
+      .buttons {
+        display: flex;
+
+        &:hover {
+          .mac-button > i {
+            opacity: 1;
+          }
+        }
+
+        .mac-button {
+          @include round(12px);
+          @include flex-center;
+          margin-right: 8px;
+          cursor: pointer;
+
+          &.red {
+            background: #ed655a;
+          }
+
+          &.green {
+            background: #72be47;
+          }
+
+          &.yellow {
+            background: #e0c04c;
+          }
+
+          i {
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: $black;
+            font-weight: $font-weight-bold;
+            transform-origin: center center;
+          }
         }
       }
 
-      .mac-button {
-        @include round(12px);
-        @include flex-center;
-        margin-right: 8px;
-        cursor: pointer;
+      .shrink-player {
+        position: relative;
+        top: -6px;
+        margin-left: 16px;
+      }
 
-        &.red {
-          background: #ed655a;
-        }
+      .history {
+        margin-left: 65px;
+      }
 
-        &.green {
-          background: #72be47;
-        }
-
-        &.yellow {
-          background: #e0c04c;
-        }
-
-        i {
-          opacity: 0;
-          transition: opacity 0.3s;
-          color: $black;
-          font-weight: $font-weight-bold;
-          transform-origin: center center;
-        }
+      .actions {
+        margin-left: 70px;
       }
     }
 
-    .shrink-player {
-      position: relative;
-      top: -6px;
-      margin-left: 16px;
-    }
+    .right {
+      display: flex;
+      align-items: center;
 
-    .history {
-      margin-left: 65px;
-    }
-
-    .actions {
-      margin-left: 70px;
+      .search-wrap {
+        margin-right: 16px;
+      }
     }
   }
-
-  .right {
-    display: flex;
-    align-items: center;
-
-    .search-wrap {
-      margin-right: 16px;
-    }
-  }
-}
 </style>

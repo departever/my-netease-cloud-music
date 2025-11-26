@@ -1,40 +1,34 @@
-export { debounce, throttle } from "lodash-es"; //防抖节流函数
+export { debounce, throttle } from 'lodash-es'; //防抖节流函数
 
-import { ElNotification } from "element-plus";
+import { ElNotification } from 'element-plus';
 
 export function pad(num, n = 2) {
   let len = num.toString().length;
   while (len < n) {
-    num = "0" + num;
+    num = '0' + num;
     len++;
   }
   return num;
 }
 
-export function formatDate(date, fmt = "yyyy-MM-dd hh:mm:ss") {
+export function formatDate(date, fmt = 'yyyy-MM-dd hh:mm:ss') {
   date = date instanceof Date ? date : new Date(date);
   const yearMatch = /(y+)/.exec(fmt);
   if (yearMatch) {
-    fmt = fmt.replace(
-      yearMatch[0],
-      (date.getFullYear() + "").substr(4 - yearMatch[0].length)
-    );
+    fmt = fmt.replace(yearMatch[0], (date.getFullYear() + '').substr(4 - yearMatch[0].length));
   }
   let o = {
-    "M+": date.getMonth() + 1,
-    "d+": date.getDate(),
-    "h+": date.getHours(),
-    "m+": date.getMinutes(),
-    "s+": date.getSeconds(),
+    'M+': date.getMonth() + 1,
+    'd+': date.getDate(),
+    'h+': date.getHours(),
+    'm+': date.getMinutes(),
+    's+': date.getSeconds(),
   };
   for (let k in o) {
     const kMatch = new RegExp(`(${k})`).exec(fmt);
     if (kMatch) {
-      let str = o[k] + "";
-      fmt = fmt.replace(
-        kMatch[0],
-        kMatch[0].length === 1 ? str : padLeftZero(str)
-      );
+      let str = o[k] + '';
+      fmt = fmt.replace(kMatch[0], kMatch[0].length === 1 ? str : padLeftZero(str));
     }
   }
   return fmt;
@@ -89,14 +83,14 @@ export function shallowEqual(a, b, compareKey) {
 export function notify(message, type) {
   const params = {
     title: message,
-    duration: 1500
+    duration: 1500,
   };
   const fn = type ? ElNotification[type] : ElNotification;
   return fn(params);
 }
 
-["success", "warning", "info", "error"].forEach((key) => {
-  notify[key] = (message) => {
+['success', 'warning', 'info', 'error'].forEach(key => {
+  notify[key] = message => {
     return notify(message, key);
   };
 });
@@ -129,9 +123,7 @@ export function exitFullscreen() {
 }
 
 export function isFullscreen() {
-  return (
-    document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
-  );
+  return document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
 }
 
 export function isUndef(v) {

@@ -1,3 +1,3 @@
-import { request } from '@/utils/axios'
+import { request } from '@/utils/axios';
 
-export const getArtists = id => request.get(`/artists?id=${id}`)
+export const getArtists = id => request.get(`/artists?id=${id}`);

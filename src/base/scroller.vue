@@ -1,84 +1,84 @@
 <template>
-    <div class="scroller" ref="scroller">
-        <slot></slot>
-    </div>
+  <div class="scroller" ref="scroller">
+    <slot></slot>
+  </div>
 </template>
 
 <script setup>
-import { ref, watch, nextTick } from 'vue'
-import BScroll from '@better-scroll/core'
-import ScrollBar from '@better-scroll/scroll-bar'
-import MouseWheel from '@better-scroll/mouse-wheel'
+  import { ref, watch, nextTick } from 'vue';
+  import BScroll from '@better-scroll/core';
+  import ScrollBar from '@better-scroll/scroll-bar';
+  import MouseWheel from '@better-scroll/mouse-wheel';
 
-BScroll.use(ScrollBar)
-BScroll.use(MouseWheel)
+  BScroll.use(ScrollBar);
+  BScroll.use(MouseWheel);
 
-const defaultOptions = {
+  const defaultOptions = {
     mouseWheel: true,
     scrollY: true,
     scrollbar: true,
-    probeType: 3
-}
+    probeType: 3,
+  };
 
-const props = defineProps({
+  const props = defineProps({
     data: {
-        type: Array,
-        default: () => []
+      type: Array,
+      default: () => [],
     },
     options: {
-        type: Object,
-        default: () => ({})
-    }
-})
+      type: Object,
+      default: () => ({}),
+    },
+  });
 
-const scroller = ref(null)
-const bsInstance = ref(null)
+  const scroller = ref(null);
+  const bsInstance = ref(null);
 
-const emit = defineEmits(['init']);
+  const emit = defineEmits(['init']);
 
-const getScroller = () => {
+  const getScroller = () => {
     return bsInstance.value;
-};
+  };
 
-const refresh = () => {
+  const refresh = () => {
     if (bsInstance.value) {
-        bsInstance.value.refresh();
+      bsInstance.value.refresh();
     }
-};
+  };
 
-defineExpose({
+  defineExpose({
     getScroller,
-    refresh
-});
+    refresh,
+  });
 
-watch(
+  watch(
     () => props.data,
     async () => {
-        nextTick(() => {
-            if (!bsInstance.value) {
-                bsInstance.value = new BScroll(
-                    scroller.value,
-                    Object.assign({}, defaultOptions, props.options)
-                )
-                emit('init', bsInstance.value)
-            } else {
-                bsInstance.value.refresh()
-            }
-        })
+      nextTick(() => {
+        if (!bsInstance.value) {
+          bsInstance.value = new BScroll(
+            scroller.value,
+            Object.assign({}, defaultOptions, props.options)
+          );
+          emit('init', bsInstance.value);
+        } else {
+          bsInstance.value.refresh();
+        }
+      });
     },
     { immediate: true }
-)
+  );
 </script>
 
 <style lang="scss">
-.scroller {
+  .scroller {
     position: relative;
     overflow: hidden;
     height: 100%;
 
     .bscroll-indicator {
-        border: none !important;
-        background: var(--scrollbar-color) !important;
+      border: none !important;
+      background: var(--scrollbar-color) !important;
     }
-}
+  }
 </style>
