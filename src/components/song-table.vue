@@ -123,7 +123,7 @@ columns.value = [
 ];
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .song-table {
     .title-th {
         color: var(--font-color-grey2);

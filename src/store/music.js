@@ -89,8 +89,8 @@ export const useMusicStore = defineStore("music", {
         return currentIndex;
       }
       let index = Math.round(Math.random() * (playlist.length - 1));
-      if (index === currentIndex) {
-        index = this.getRandomIndex(playlist, currentIndex);
+      while (index === currentIndex) {
+        index = Math.round(Math.random() * (playlist.length - 1));
       }
       return index;
     },
