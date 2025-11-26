@@ -28,7 +28,7 @@ const routerViewCls = computed(() => {
   return layoutCenterNames.includes(route.name) ? "router-view-center" : "";
 });
 const isScrollDisabled = computed(() => {
-  return route.name === 'songs'; // 替换为你的歌曲路由名称
+  return ['songs', 'playlist'].includes(route.name);
 });
 </script>
 
@@ -48,6 +48,7 @@ const isScrollDisabled = computed(() => {
       flex: 1;
       min-width: $layout-content-min-width;
       margin-bottom: $mini-player-height;
+      height: calc(100% - #{$mini-player-height});
 
       .router-view-center {
         max-width: $center-content-max-width;

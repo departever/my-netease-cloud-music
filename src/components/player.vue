@@ -117,6 +117,10 @@ const scroller = ref(null)
 
 const lyricRefs = ref([])
 
+const resetLyricRefs = () => {
+  lyricRefs.value = []
+}
+
 const setLyricRef = (el) => {
   if (el) {
     lyricRefs.value.push(el)
@@ -124,6 +128,9 @@ const setLyricRef = (el) => {
 }
 
 const updateLyric = async () => {
+  // 每次更新前清空，避免内存泄漏
+  resetLyricRefs()
+  
   const result = await getLyric(musicStore.currentSong.id)
   nolyric.value = !isDef(result.lrc) || !result.lrc.lyric || !result.tlyric
   if (!nolyric.value) {
@@ -222,8 +229,8 @@ const onGoMv = () => {
 }
 
 const resizeScroller = debounce(() => {
-  if (scroller && scroller.getScroller) {
-    scroller.getScroller().refresh()
+  if (scroller.value && scroller.value.getScroller) {
+    scroller.value.getScroller().refresh()
   }
 }, 500)
 
@@ -237,16 +244,38 @@ const removeResizeListener = () => {
 
 const playing = computed(() => musicStore.playing);
 
+// 二分查找优化性能
+const findLyricIndex = (lyrics, time) => {
+  if (!lyrics || lyrics.length === 0) return -1
+  
+  let left = 0
+  let right = lyrics.length - 1
+  
+  // 时间小于第一句歌词，返回 -1
+  if (time < lyrics[0].time) return -1
+  
+  // 时间大于等于最后一句歌词，返回最后一个索引
+  if (time >= lyrics[right].time) return right
+  
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2)
+    const midTime = lyrics[mid].time
+    const nextTime = lyrics[mid + 1]?.time ?? Infinity
+    
+    if (time >= midTime && time < nextTime) {
+      return mid
+    } else if (time < midTime) {
+      right = mid - 1
+    } else {
+      left = mid + 1
+    }
+  }
+  
+  return left
+}
+
 const activeLyricIndex = computed(() => {
-  return lyricWithTranslation.value
-    ? lyricWithTranslation.value.findIndex((l, index) => {
-      const nextLyric = lyricWithTranslation.value[index + 1]
-      return (
-        musicStore.currentTime >= l.time &&
-        (nextLyric ? musicStore.currentTime < nextLyric.time : true)
-      )
-    })
-    : -1
+  return findLyricIndex(lyricWithTranslation.value, musicStore.currentTime)
 })
 
 const lyricWithTranslation = computed(() => {

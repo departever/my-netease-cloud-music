@@ -1,18 +1,30 @@
 <template>
-  <div ref="containerRef" class="virtual-list" @scroll="handleScroll">
-    <!-- 占位层：撑起滚动高度 -->
-    <div class="virtual-list-spacer" :style="{ height: totalHeight + 'px' }"></div>
-    <!-- 内容层：绝对定位，只渲染可见项目 -->
-    <div class="virtual-list-content" :style="{ transform: `translateY(${offsetY}px)` }">
-      <SongRow
-        v-for="(song, index) in visibleSongs"
-        :key="song.id"
-        :song="song"
-        :index="startIndex + index + 1"
-        :is-active="isActiveSong(song)"
-        :highlight-text="highlightText"
-        @click="onRowClick(song)"
-      />
+  <div class="virtual-list-wrapper">
+    <!-- 表头 -->
+    <div class="virtual-list-header" v-if="showHeader">
+      <span class="header-index"></span>
+      <span class="header-img"></span>
+      <span class="header-name">音乐标题</span>
+      <span class="header-artist">歌手</span>
+      <span class="header-album">专辑</span>
+      <span class="header-duration">时长</span>
+    </div>
+    <!-- 虚拟列表容器 -->
+    <div ref="containerRef" class="virtual-list" @scroll="handleScroll">
+      <!-- 占位层：撑起滚动高度 -->
+      <div class="virtual-list-spacer" :style="{ height: totalHeight + 'px' }"></div>
+      <!-- 内容层：绝对定位，只渲染可见项目 -->
+      <div class="virtual-list-content" :style="{ transform: `translateY(${offsetY}px)` }">
+        <SongRow
+          v-for="(song, index) in visibleSongs"
+          :key="song.id"
+          :song="song"
+          :index="startIndex + index + 1"
+          :is-active="isActiveSong(song)"
+          :highlight-text="highlightText"
+          @click="onRowClick(song)"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -39,6 +51,10 @@ const props = defineProps({
   buffer: {
     type: Number,
     default: 2, // 上下缓冲区数量，防止滚动白屏
+  },
+  showHeader: {
+    type: Boolean,
+    default: true, // 默认显示表头
   },
 });
 
@@ -119,10 +135,52 @@ const onRowClick = (song) => {
 </script>
 
 <style lang="scss" scoped>
+.virtual-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.virtual-list-header {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 10px;
+  color: var(--font-color-grey2);
+  font-size: 12px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  background-color: var(--body-bgcolor);
+
+  .header-index {
+    width: 70px;
+    flex-shrink: 0;
+  }
+
+  .header-img {
+    width: 50px;
+    margin-right: 20px;
+    flex-shrink: 0;
+  }
+
+  .header-name {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .header-artist,
+  .header-album,
+  .header-duration {
+    flex: 0 0 120px;
+    margin-right: 20px;
+  }
+}
+
 .virtual-list {
-  flex: 1; // 自动填充剩余空间
-  height: 0; // 配合 flex: 1 使用，防止撑开父容器
-  min-height: 200px; // 最小高度
+  flex: 1;
+  height: 0;
+  min-height: 200px;
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;

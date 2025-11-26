@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-// 内容需要居中的页面
+// 懒加载页面组件
 const Discovery = () => import("@/page/discovery/index.vue");
 const PlaylistDetail = () => import("@/page/playlist-detail/index.vue");
 const Playlists = () => import("@/page/playlists/index.vue");
@@ -12,9 +12,7 @@ const SearchMvs = () => import("@/page/search/mvs.vue");
 const Mvs = () => import("@/page/mvs/index.vue");
 const Mv = () => import("@/page/mv/index.vue");
 
-export const layoutCenterNames = ["discovery", "playlists", "songs", "mvs"];
-
-// 需要显示在侧边栏菜单的页面
+// 需要显示在侧边栏菜单的页面（同时也是需要居中布局的页面）
 export const menuRoutes = [
   {
     path: "/discovery",
@@ -54,7 +52,11 @@ export const menuRoutes = [
   },
 ];
 
-const routes = [
+// 内容需要居中的页面名称（从 menuRoutes 自动提取）
+export const layoutCenterNames = menuRoutes.map(route => route.name);
+
+// 其他路由（非菜单路由）
+const otherRoutes = [
   {
     path: "/",
     redirect: "/discovery",
@@ -98,27 +100,10 @@ const routes = [
     component: Mv,
     props: (route) => ({ id: +route.params.id }),
   },
-  {
-    path: "/discovery",
-    name: "discovery",
-    component: Discovery,
-  },
-  {
-    path: "/playlists",
-    name: "playlists",
-    component: Playlists,
-  },
-  {
-    path: "/songs",
-    name: "songs",
-    component: Songs,
-  },
-  {
-    path: "/mvs",
-    name: "mvs",
-    component: Mvs,
-  },
 ];
+
+// 合并所有路由
+const routes = [...otherRoutes, ...menuRoutes];
 
 const router = createRouter({
   history: createWebHistory(),

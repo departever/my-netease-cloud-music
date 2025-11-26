@@ -4,16 +4,18 @@
         <div class="tabs-wrap">
             <Tabs :tabs="tabs" type="theme" :active="activeTab" @tabChange="handleTabChange"/>
             <el-input :class="getInputCls()" @blur="onInputBlur" @focus="onInputFocus" class="input"
-                placeholder="搜索歌单音乐" prefix-icon="el-icon-search" v-model="searchValue"
+                placeholder="搜索歌单音乐" :prefix-icon="Search" v-model="searchValue"
                 v-show="activeTab === SONG_IDX"></el-input>
         </div>
         <div class="empty" v-if="searchValue && !filteredSongs.length">
             未能找到和
-            <span class="keyword">“{{ searchValue }}”</span>
+            <span class="keyword">"{{ searchValue }}"</span>
             相关的任何音乐
         </div>
-        <SongTable :highlightText="searchValue" :songs="filteredSongs" class="table" v-show="activeTab === SONG_IDX" />
-        <div class="comments" v-show="activeTab === COMMENT_IDX">
+        <div class="song-list-wrap" v-show="activeTab === SONG_IDX && filteredSongs.length">
+            <VituralList :highlightText="searchValue" :songs="filteredSongs" />
+        </div>
+        <div class="comments-wrap" v-show="activeTab === COMMENT_IDX">
             <Comments :id="id" @update="onCommentsUpdate" type="playlist" />
         </div>
     </div>
@@ -21,8 +23,9 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
+import { Search } from '@element-plus/icons-vue';
 import DetailHeader from "./header.vue";
-import SongTable from "@/components/song-table.vue";
+import VituralList from "@/components/vitural-list.vue";
 import Comments from "@/components/comments.vue";
 import { createSong } from "@/utils/business";
 import { scrollInto } from "@/utils";
@@ -115,6 +118,9 @@ onMounted(() => {
 <style lang="scss" scoped>
 .playlist-detail {
     width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 
     .tabs-wrap {
         display: flex;
@@ -122,9 +128,10 @@ onMounted(() => {
         align-items: center;
         margin: 0 24px;
         border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
 
         .input {
-            width: 125px;
+            width: 150px;
 
             &:not(:hover) {
                 &.inactive {
@@ -145,7 +152,18 @@ onMounted(() => {
         }
     }
 
-    .comments {
+    .song-list-wrap {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 0 24px;
+    }
+
+    .comments-wrap {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
         padding: 16px 32px;
     }
 }
