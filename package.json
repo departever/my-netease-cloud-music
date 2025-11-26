@@ -15,8 +15,6 @@
     "@better-scroll/mouse-wheel": "^2.5.1",
     "@better-scroll/scroll-bar": "^2.5.1",
     "axios": "^1.6.8",
-    "better-scroll": "^2.5.1",
-    "electron": "latest",
     "element-plus": "^2.6.1",
     "good-storage": "^1.1.1",
     "pinia": "^2.1.7",

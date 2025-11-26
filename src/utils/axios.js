@@ -51,12 +51,12 @@ function mixinLoading(interceptors) {
   function loadingRequestInterceptor(config) {
     if (!loading) {
       loading = ElLoading.service({
-        target: "#app",
+        target: "body",
         background: "transparent",
         text: "载入中",
       });
+      useAxiosLoaderStore().setAxiosLoading(true);
     }
-    useAxiosLoaderStore().setAxiosLoading(true);
     loadingCount++;
 
     return config;
