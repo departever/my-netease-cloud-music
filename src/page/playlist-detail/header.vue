@@ -1,149 +1,147 @@
 <template>
-    <div class="header" v-if="playlist.id">
-        <div class="img-wrap">
-            <img :src="$utils.genImgUrl(playlist.coverImgUrl, 400)" />
-        </div>
-        <div class="content">
-            <div class="title-wrap">
-                <p class="title">{{ playlist.name }}</p>
-            </div>
-            <div class="creator-wrap">
-                <img :src="playlist.creator.avatarUrl" class="avatar" />
-                <p class="creator">{{ playlist.creator.nickname }}</p>
-                <p class="create-time">
-                    {{ $utils.formatDate(playlist.createTime, "yyyy-MM-dd") }} 创建
-                </p>
-            </div>
-            <div class="action-wrap">
-                <NButton @click="playAll" class="button">
-                    <Icon class="icon middle" color="white" type="play-round" />
-                    <span class="middle">播放全部</span>
-                </NButton>
-            </div>
-            <div class="desc-wrap">
-                <p class="desc" v-if="tagsText">
-                    <span>标签：{{ tagsText }}</span>
-                </p>
-                <p class="desc" v-if="playlist.description">
-                    <span class="value">简介：{{ playlist.description }}</span>
-                </p>
-            </div>
-        </div>
+  <div class="header" v-if="playlist.id">
+    <div class="img-wrap">
+      <img :src="$utils.genImgUrl(playlist.coverImgUrl, 400)" />
     </div>
+    <div class="content">
+      <div class="title-wrap">
+        <p class="title">{{ playlist.name }}</p>
+      </div>
+      <div class="creator-wrap">
+        <img :src="playlist.creator.avatarUrl" class="avatar" />
+        <p class="creator">{{ playlist.creator.nickname }}</p>
+        <p class="create-time">{{ $utils.formatDate(playlist.createTime, 'yyyy-MM-dd') }} 创建</p>
+      </div>
+      <div class="action-wrap">
+        <NButton @click="playAll" class="button">
+          <Icon class="icon middle" color="white" type="play-round" />
+          <span class="middle">播放全部</span>
+        </NButton>
+      </div>
+      <div class="desc-wrap">
+        <p class="desc" v-if="tagsText">
+          <span>标签：{{ tagsText }}</span>
+        </p>
+        <p class="desc" v-if="playlist.description">
+          <span class="value">简介：{{ playlist.description }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
-import { useMusicStore } from '@/store/music'
+  import { computed, ref } from 'vue';
+  import { useMusicStore } from '@/store/music';
 
-const props = defineProps({
+  const props = defineProps({
     playlist: {
-        type: Object,
-        default: () => ({}),
+      type: Object,
+      default: () => ({}),
     },
     songs: {
-        type: Array,
-        default: () => [],
+      type: Array,
+      default: () => [],
     },
-})
+  });
 
-const musicStore = useMusicStore()
+  const musicStore = useMusicStore();
 
-const tagsText = computed(() => {
-    return props.playlist.tags.join('/')
-})
+  const tagsText = computed(() => {
+    return props.playlist.tags.join('/');
+  });
 
-const playAll = () => {
-    musicStore.startSong(props.songs[0])
-    musicStore.setPlaylist(props.songs)
-}
+  const playAll = () => {
+    musicStore.startSong(props.songs[0]);
+    musicStore.setPlaylist(props.songs);
+  };
 </script>
 
 <style lang="scss" scoped>
-.header {
-  display: flex;
-  padding: 36px;
-
-  .img-wrap {
-    width: 200px;
-    height: 200px;
-    margin-right: 24px;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
-  }
-
-  .content {
+  .header {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    flex: 1;
+    padding: 36px;
 
-    .title-wrap {
-      display: flex;
-      align-items: center;
-      margin-bottom: 12px;
+    .img-wrap {
+      width: 200px;
+      height: 200px;
+      margin-right: 24px;
 
-      .title {
-        font-size: $font-size-lg;
-        color: var(--font-color-white);
+      img {
+        width: 100%;
+        height: 100%;
       }
     }
 
-    .action-wrap {
-      margin-bottom: 18px;
+    .content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
 
-      .button {
-        background: #f95043;
-        background: linear-gradient(to right, #fa5143, #f44d41, #d53b32);
-        color: #fbdfdd;
-        border: none;
+      .title-wrap {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
 
-        .icon {
-          margin-right: 4px;
-        }
-
-        .middle {
-          vertical-align: middle;
+        .title {
+          font-size: $font-size-lg;
+          color: var(--font-color-white);
         }
       }
-    }
 
-    .creator-wrap {
-      display: flex;
-      align-items: center;
-      margin-bottom: 18px;
+      .action-wrap {
+        margin-bottom: 18px;
 
-      .avatar {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        margin-right: 8px;
+        .button {
+          background: #f95043;
+          background: linear-gradient(to right, #fa5143, #f44d41, #d53b32);
+          color: #fbdfdd;
+          border: none;
+
+          .icon {
+            margin-right: 4px;
+          }
+
+          .middle {
+            vertical-align: middle;
+          }
+        }
       }
 
-      .creator {
-        margin-right: 8px;
+      .creator-wrap {
+        display: flex;
+        align-items: center;
+        margin-bottom: 18px;
+
+        .avatar {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          margin-right: 8px;
+        }
+
+        .creator {
+          margin-right: 8px;
+        }
+
+        .create-time {
+          font-size: $font-size-sm;
+        }
       }
 
-      .create-time {
-        font-size: $font-size-sm;
-      }
-    }
+      .desc {
+        margin-bottom: 8px;
 
-    .desc {
-      margin-bottom: 8px;
+        .label {
+          display: inline-block;
+          margin-right: 8px;
+        }
 
-      .label {
-        display: inline-block;
-        margin-right: 8px;
-      }
-
-      .value {
-        @include text-ellipsis-multi(3);
+        .value {
+          @include text-ellipsis-multi(3);
+        }
       }
     }
   }
-}
 </style>

@@ -1,189 +1,218 @@
 <template>
-    <el-table v-if="songs.length" :data="songs" class="song-table" :cell-class-name="tableCellClassName"
-        header-cell-class-name="title-th" style="width: 99.9%" @row-click="onRowClick">
-        <el-table-column v-for="(column, index) in showColumns" :key="index" :prop="column.prop" :label="column.label"
-            :width="column.width">
-            <template v-slot:default="scope">
-                <div v-if="column.prop === 'index'" class="index-wrap">
-                    <Icon v-if="isActiveSong(scope.row)" class="horn" type="horn" color="theme" />
-                    <span v-else>{{ pad(scope.$index + 1) }}</span>
-                </div>
-                <div v-if="column.prop === 'img'" class="img-wrap">
-                    <img v-lazy="scope.row.img" />
-                    <PlayIcon class="play-icon" />
-                </div>
-                <div v-if="column.prop === 'name'">
-                    <div class="song-table-name-cell">
-                        <HighlightText class="song-table-name" :text="scope.row.name" :highlight-text="highlightText" />
-                        <Icon v-if="scope.row.mvId" class="mv-icon" @click="goMvWithCheck(scope.row.mvId)" type="mv"
-                            color="theme" :size="18" />
-                    </div>
-                    <NameDescRenderer v-if="scope.row.alias" :alias="scope.row.alias" :highlightText="highlightText" />
-                </div>
-                <span v-if="column.prop === 'artistsText'">
-                    {{ scope.row.artistsText }}
-                </span>
-                <span v-if="column.prop === 'albumName'">
-                    {{ scope.row.albumName }}
-                </span>
-                <span v-if="column.prop === 'durationSecond'">
-                    {{ $utils.formatTime(scope.row.durationSecond) }}
-                </span>
-            </template>
-        </el-table-column>
-    </el-table>
+  <el-table
+    v-if="songs.length"
+    :data="songs"
+    class="song-table"
+    :cell-class-name="tableCellClassName"
+    header-cell-class-name="title-th"
+    style="width: 99.9%"
+    @row-click="onRowClick"
+  >
+    <el-table-column
+      v-for="(column, index) in showColumns"
+      :key="index"
+      :prop="column.prop"
+      :label="column.label"
+      :width="column.width"
+    >
+      <template v-slot:default="scope">
+        <div v-if="column.prop === 'index'" class="index-wrap">
+          <Icon v-if="isActiveSong(scope.row)" class="horn" type="horn" color="theme" />
+          <span v-else>{{ pad(scope.$index + 1) }}</span>
+        </div>
+        <div v-if="column.prop === 'img'" class="img-wrap">
+          <img v-lazy="scope.row.img" />
+          <PlayIcon class="play-icon" />
+        </div>
+        <div v-if="column.prop === 'name'">
+          <div class="song-table-name-cell">
+            <HighlightText
+              class="song-table-name"
+              :text="scope.row.name"
+              :highlight-text="highlightText"
+            />
+            <Icon
+              v-if="scope.row.mvId"
+              class="mv-icon"
+              @click="goMvWithCheck(scope.row.mvId)"
+              type="mv"
+              color="theme"
+              :size="18"
+            />
+          </div>
+          <NameDescRenderer
+            v-if="scope.row.alias"
+            :alias="scope.row.alias"
+            :highlightText="highlightText"
+          />
+        </div>
+        <span v-if="column.prop === 'artistsText'">
+          {{ scope.row.artistsText }}
+        </span>
+        <span v-if="column.prop === 'albumName'">
+          {{ scope.row.albumName }}
+        </span>
+        <span v-if="column.prop === 'durationSecond'">
+          {{ $utils.formatTime(scope.row.durationSecond) }}
+        </span>
+      </template>
+    </el-table-column>
+  </el-table>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useMusicStore } from '@/store/music';
-import { ElTable, ElTableColumn } from 'element-plus';
-import { pad } from '@/utils';
-import { goMvWithCheck } from '@/utils/business'
+  import { ref, computed } from 'vue';
+  import { useMusicStore } from '@/store/music';
+  import { ElTable, ElTableColumn } from 'element-plus';
+  import { pad } from '@/utils';
+  import { goMvWithCheck } from '@/utils/business';
 
-const props = defineProps({
+  const props = defineProps({
     hideColumns: {
-        type: Array,
-        default: () => [],
+      type: Array,
+      default: () => [],
     },
     songs: {
-        type: Array,
-        default: () => [],
+      type: Array,
+      default: () => [],
     },
     highlightText: {
-        type: String,
-        default: "",
+      type: String,
+      default: '',
     },
     renderNameDesc: {
-        type: Function,
+      type: Function,
     },
-});
+  });
 
-const musicStore = useMusicStore();
-const currentSong = computed(() => musicStore.currentSong);
-const isActiveSong = (song) => song.id === currentSong.value.id;
+  const musicStore = useMusicStore();
+  const currentSong = computed(() => musicStore.currentSong);
+  const isActiveSong = song => song.id === currentSong.value.id;
 
-const columns = ref([]);
+  const columns = ref([]);
 
-const showColumns = computed(() => {
+  const showColumns = computed(() => {
     const hideColumns = props.hideColumns.slice();
     const reference = props.songs[0];
     const { img } = reference;
     if (!img) {
-        hideColumns.push('img');
+      hideColumns.push('img');
     }
     return columns.value.filter(column => {
-        return !hideColumns.find(hideColumn => hideColumn === column.prop);
+      return !hideColumns.find(hideColumn => hideColumn === column.prop);
     });
-});
+  });
 
-const onRowClick = (song) => {
+  const onRowClick = song => {
     musicStore.startSong(song);
     musicStore.setPlaylist(props.songs);
-};
+  };
 
-const tableCellClassName = ({ row, columnIndex }) => {
+  const tableCellClassName = ({ row, columnIndex }) => {
     let retCls = [];
-    if (isActiveSong(row) && columnIndex === showColumns.value.findIndex(({ prop }) => prop === 'name')) {
-        retCls.push('song-active');
+    if (
+      isActiveSong(row) &&
+      columnIndex === showColumns.value.findIndex(({ prop }) => prop === 'name')
+    ) {
+      retCls.push('song-active');
     }
     return retCls.join(' ');
-};
+  };
 
-// 定义columns
-columns.value = [
+  // 定义columns
+  columns.value = [
     {
-        prop: "index",
-        label: "",
-        width: "70",
+      prop: 'index',
+      label: '',
+      width: '70',
     },
     {
-        prop: "img",
-        label: " ",
-        width: "100",
+      prop: 'img',
+      label: ' ',
+      width: '100',
     },
     {
-        prop: "name",
-        label: "音乐标题",
-        className: "title-td",
+      prop: 'name',
+      label: '音乐标题',
+      className: 'title-td',
     },
     {
-        prop: "artistsText",
-        label: "歌手",
+      prop: 'artistsText',
+      label: '歌手',
     },
     {
-        prop: "albumName",
-        label: "专辑",
+      prop: 'albumName',
+      label: '专辑',
     },
     {
-        prop: "durationSecond",
-        label: "时长",
-        width: "100",
+      prop: 'durationSecond',
+      label: '时长',
+      width: '100',
     },
-];
+  ];
 </script>
 
 <style lang="scss" scoped>
-.song-table {
+  .song-table {
     .title-th {
-        color: var(--font-color-grey2);
-        font-weight: normal;
-        text-align: left;
+      color: var(--font-color-grey2);
+      font-weight: normal;
+      text-align: left;
     }
 
     .title-td {
-        color: var(--font-color-white);
+      color: var(--font-color-white);
     }
 
     .padding-space {
-        padding-left: 24px;
+      padding-left: 24px;
     }
 
     .song-active {
-        color: $theme-color;
+      color: $theme-color;
 
-        .high-light-text {
-            color: $theme-color;
-        }
+      .high-light-text {
+        color: $theme-color;
+      }
     }
 
     .index-wrap {
-        text-align: center;
-        color: var(--font-color-grey-shallow);
+      text-align: center;
+      color: var(--font-color-grey-shallow);
     }
 
     .img-wrap {
-        position: relative;
-        @include img-wrap(60px);
+      position: relative;
+      @include img-wrap(60px);
 
-        img {
-            border-radius: 4px;
-        }
+      img {
+        border-radius: 4px;
+      }
 
-        .play-icon {
-            @include abs-center;
-        }
+      .play-icon {
+        @include abs-center;
+      }
     }
 
     .high-light-text {
-        color: $blue;
+      color: $blue;
     }
 
     .song-table-name-cell {
+      @include text-ellipsis;
+      display: flex;
+      align-items: center;
+      flex: 0 0 24px;
+
+      .song-table-name {
+        overflow: hidden;
         @include text-ellipsis;
-        display: flex;
-        align-items: center;
-        flex: 0 0 24px;
+      }
 
-        .song-table-name {
-            overflow: hidden;
-            @include text-ellipsis;
-        }
-
-        .mv-icon {
-            width: 24px;
-            margin-left: 4px;
-        }
+      .mv-icon {
+        width: 24px;
+        margin-left: 4px;
+      }
     }
-}
+  }
 </style>

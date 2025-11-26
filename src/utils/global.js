@@ -1,4 +1,4 @@
-import * as utils from "./index";
+import * as utils from './index';
 import { defineAsyncComponent } from 'vue';
 
 export default {
@@ -8,7 +8,10 @@ export default {
 
     for (const path in components) {
       // 提取文件名并转换为PascalCase格式
-      const componentName = path.split('/').pop().replace(/\.\w+$/, '')
+      const componentName = path
+        .split('/')
+        .pop()
+        .replace(/\.\w+$/, '')
         .split('-')
         .map(part => part.charAt(0).toUpperCase() + part.slice(1))
         .join('');

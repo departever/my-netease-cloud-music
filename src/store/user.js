@@ -1,10 +1,10 @@
-import { defineStore } from "pinia";
-import storage from 'good-storage'
-import { UID_KEY } from '@/utils'
-import { notify, isDef } from '@/utils'
-import { getUserDetail, getUserPlaylist } from "@/api"
+import { defineStore } from 'pinia';
+import storage from 'good-storage';
+import { UID_KEY } from '@/utils';
+import { notify, isDef } from '@/utils';
+import { getUserDetail, getUserPlaylist } from '@/api';
 
-export const useUserStore = defineStore("user", {
+export const useUserStore = defineStore('user', {
   state: () => ({
     // 登录用户
     user: {},
@@ -20,7 +20,7 @@ export const useUserStore = defineStore("user", {
     },
     async login(uid) {
       const error = () => {
-        notify.error("登录失败，请输入正确的uid。");
+        notify.error('登录失败，请输入正确的uid。');
         return false;
       };
 
@@ -48,14 +48,14 @@ export const useUserStore = defineStore("user", {
     },
   },
   getters: {
-    isLogin: (state) => {
+    isLogin: state => {
       return isDef(state.user.userId);
     },
-    userMenus: (state) => {
+    userMenus: state => {
       const userCreateList = [];
       const userCollectList = [];
 
-      state.userPlaylist.forEach((playlist) => {
+      state.userPlaylist.forEach(playlist => {
         const { userId } = playlist;
         if (state.user.userId === userId) {
           userCreateList.push(playlist);
@@ -64,12 +64,12 @@ export const useUserStore = defineStore("user", {
         }
       });
 
-      const genPlaylistChildren = (playlist) =>
+      const genPlaylistChildren = playlist =>
         playlist.map(({ id, name }) => ({
           path: `/playlist/${id}`,
           meta: {
             title: name,
-            icon: "playlist-menu",
+            icon: 'playlist-menu',
           },
         }));
 
@@ -77,16 +77,16 @@ export const useUserStore = defineStore("user", {
 
       if (userCreateList.length) {
         retMenus.push({
-          type: "playlist",
-          title: "创建的歌单",
+          type: 'playlist',
+          title: '创建的歌单',
           children: genPlaylistChildren(userCreateList),
         });
       }
 
       if (userCollectList.length) {
         retMenus.push({
-          type: "playlist",
-          title: "收藏的歌单",
+          type: 'playlist',
+          title: '收藏的歌单',
           children: genPlaylistChildren(userCollectList),
         });
       }

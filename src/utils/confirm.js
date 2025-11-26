@@ -14,19 +14,20 @@ export const confirm = async (text, title, onConfirm = () => {}) => {
       setup() {
         const visible = ref(true);
 
-        return () => h(Confirm, {
-          text,
-          title,
-          onConfirm,
-          modelValue: visible.value,
-          'onUpdate:modelValue': (newVal) => {
-            visible.value = newVal;
-            if (!newVal) {
-              instanceCache.unmount();
-              instanceCache = null;
-            }
-          }
-        });
+        return () =>
+          h(Confirm, {
+            text,
+            title,
+            onConfirm,
+            modelValue: visible.value,
+            'onUpdate:modelValue': newVal => {
+              visible.value = newVal;
+              if (!newVal) {
+                instanceCache.unmount();
+                instanceCache = null;
+              }
+            },
+          });
       },
     });
 

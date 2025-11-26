@@ -1,12 +1,10 @@
-import axios from "axios";
-import { ElLoading } from "element-plus";
-import { confirm } from "./confirm.js";
-import { useAxiosLoaderStore } from "@/store/global";
-
+import axios from 'axios';
+import { ElLoading } from 'element-plus';
+import { confirm } from './confirm.js';
+import { useAxiosLoaderStore } from '@/store/global';
 
 //备用站点 const BASE_URL = "https://fetch1.488848.xyz/https://servencmapi-kltu2mmna3l0.runkit.sh";
-const BASE_URL = "https://musicapi.roxybest.top/"
-
+const BASE_URL = 'https://musicapi.roxybest.top/';
 
 export const requestWithoutLoading = createBaseInstance();
 
@@ -18,7 +16,7 @@ mixinLoading(request.interceptors);
 function createBaseInstance() {
   const instance = axios.create({
     baseURL: BASE_URL,
-    timeout: 15000
+    timeout: 15000,
   });
 
   instance.interceptors.response.use(handleResponse, handleError);
@@ -26,10 +24,10 @@ function createBaseInstance() {
 }
 
 function handleError(e) {
-  if (e.code === "ECONNABORTED") {
-    confirm("请求超时，请稍后重试", "超时错误");
+  if (e.code === 'ECONNABORTED') {
+    confirm('请求超时，请稍后重试', '超时错误');
   } else {
-    confirm(e.message, "出错辣>3<");
+    confirm(e.message, '出错辣>3<');
   }
   throw e;
 }
@@ -43,17 +41,14 @@ let loadingCount = 0;
 
 function mixinLoading(interceptors) {
   interceptors.request.use(loadingRequestInterceptor);
-  interceptors.response.use(
-    loadingResponseInterceptor,
-    loadingResponseErrorInterceptor
-  );
+  interceptors.response.use(loadingResponseInterceptor, loadingResponseErrorInterceptor);
 
   function loadingRequestInterceptor(config) {
     if (!loading) {
       loading = ElLoading.service({
-        target: "body",
-        background: "transparent",
-        text: "载入中",
+        target: 'body',
+        background: 'transparent',
+        text: '载入中',
       });
       useAxiosLoaderStore().setAxiosLoading(true);
     }

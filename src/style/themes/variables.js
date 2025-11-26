@@ -57,4 +57,4 @@ export default {
   ['--prompt-bg-color']: '#363636',
   //song-detail
   ['--song-shallow-grey-bg']: '#2A2A2A',
-}
+};

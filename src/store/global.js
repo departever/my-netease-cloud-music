@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 export const useAxiosLoaderStore = defineStore({
   id: 'axiosloader',
@@ -7,8 +7,7 @@ export const useAxiosLoaderStore = defineStore({
   }),
   actions: {
     setAxiosLoading(loading) {
-      this.axiosLoading = loading
+      this.axiosLoading = loading;
     },
   },
-})
-
+});

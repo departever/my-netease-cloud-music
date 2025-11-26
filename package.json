@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
     "electron:start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
@@ -29,6 +31,7 @@
     "electron": "^34.3.0",
     "electron-builder": "^25.1.8",
     "postcss-pxtorem": "^6.1.0",
+    "prettier": "^3.6.2",
     "sass": "^1.72.0",
     "unplugin-auto-import": "^0.17.5",
     "unplugin-vue-components": "^0.26.0",

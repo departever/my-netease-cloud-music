@@ -1,26 +1,26 @@
 <template>
-    <div @click="onClick" class="n-button">
-        <slot></slot>
-    </div>
+  <div @click="onClick" class="n-button">
+    <slot></slot>
+  </div>
 </template>
 
 <script setup>
-const props = defineProps({
+  const props = defineProps({
     type: {
-        type: String,
-        default: "common"
-    }
-});
+      type: String,
+      default: 'common',
+    },
+  });
 
-const emit = defineEmits(['click']);
+  const emit = defineEmits(['click']);
 
-const onClick = (e) => {
+  const onClick = e => {
     emit('click', e);
-}
+  };
 </script>
 
 <style lang="scss" scoped>
-.n-button {
+  .n-button {
     display: inline-block;
     padding: 5px 16px;
     border: 1px solid var(--button-border-color);
@@ -29,7 +29,7 @@ const onClick = (e) => {
     cursor: pointer;
 
     &:hover {
-        background: var(--button-hover-bgcolor);
+      background: var(--button-hover-bgcolor);
     }
-}
+  }
 </style>
