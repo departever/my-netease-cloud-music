@@ -6,7 +6,7 @@
         <p class="title">mv详情</p>
 
         <div class="player">
-          <VedioPlayer :url="mvPlayInfo.url" :poster="mvDetail.cover" ref="video" />
+          <VideoPlayer :url="mvPlayInfo.url" :poster="mvDetail.cover" ref="video" />
         </div>
 
         <div class="author-wrap">

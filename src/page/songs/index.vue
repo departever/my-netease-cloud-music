@@ -17,7 +17,7 @@
   import { ref, onMounted } from 'vue';
   import { getTopSongs } from '@/api';
   import { createSong } from '@/utils/business';
-  import VirtualList from '@/components/vitural-list.vue';
+  import VirtualList from '@/components/virtual-list.vue';
 
   const activeTabIndex = ref(0);
   const songs = ref([]);

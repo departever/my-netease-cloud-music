@@ -5,6 +5,8 @@ import { defineConfig } from "vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import vue from "@vitejs/plugin-vue";
 import vueJsx from '@vitejs/plugin-vue-jsx';
+import autoprefixer from 'autoprefixer';
+import pxtorem from 'postcss-pxtorem';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -31,15 +33,15 @@ export default defineConfig({
           @use "@/style/mixin.scss" as *;
         `,
       },
-      postcss: {
-        plugins: {
-          autoprefixer: {},
-          'postcss-pxtorem': {
-            rootValue: 14,
-            propList: ['*'],
-          },
-        },
-      },
+    },
+    postcss: {
+      plugins: [
+        autoprefixer(),
+        pxtorem({
+          rootValue: 14,
+          propList: ['*'],
+        }),
+      ],
     },
   },
   build: {

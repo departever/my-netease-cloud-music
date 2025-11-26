@@ -73,7 +73,7 @@ export function shallowEqual(a, b, compareKey) {
       compareA = compareA[compareKey];
       compareB = compareB[compareKey];
     }
-    if (!Object.is(a[i], b[i])) {
+    if (!Object.is(compareA, compareB)) {
       return false;
     }
   }

@@ -20,7 +20,7 @@
       相关的任何音乐
     </div>
     <div class="song-list-wrap" v-show="activeTab === SONG_IDX && filteredSongs.length">
-      <VituralList :highlightText="searchValue" :songs="filteredSongs" />
+      <VirtualList :highlightText="searchValue" :songs="filteredSongs" />
     </div>
     <div class="comments-wrap" v-show="activeTab === COMMENT_IDX">
       <Comments :id="id" @update="onCommentsUpdate" type="playlist" />
@@ -32,7 +32,7 @@
   import { ref, computed, watch, onMounted } from 'vue';
   import { Search } from '@element-plus/icons-vue';
   import DetailHeader from './header.vue';
-  import VituralList from '@/components/vitural-list.vue';
+  import VirtualList from '@/components/virtual-list.vue';
   import Comments from '@/components/comments.vue';
   import { createSong } from '@/utils/business';
   import { scrollInto } from '@/utils';
