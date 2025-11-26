@@ -1,16 +1,25 @@
 {
   "name": "cloudmusic",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "format": "prettier --write src",
     "format:check": "prettier --check src",
+    "prepare": "husky",
     "electron:start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
+  },
+  "lint-staged": {
+    "src/**/*.{js,vue}": [
+      "prettier --write",
+      "eslint --max-warnings=999"
+    ]
   },
   "dependencies": {
     "@better-scroll/core": "^2.5.1",
@@ -25,11 +34,18 @@
     "xgplayer": "^2.1.9"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
     "autoprefixer": "^10.4.19",
     "electron": "^34.3.0",
     "electron-builder": "^25.1.8",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.6.1",
+    "globals": "^16.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "postcss-pxtorem": "^6.1.0",
     "prettier": "^3.6.2",
     "sass": "^1.72.0",
