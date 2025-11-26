@@ -28,6 +28,7 @@
     "axios": "^1.6.8",
     "element-plus": "^2.6.1",
     "good-storage": "^1.1.1",
+    "lodash-es": "^4.17.21",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",

@@ -31,6 +31,7 @@ declare module 'vue' {
     Theme: typeof import('./src/components/theme.vue')['default']
     TopPlaylistCard: typeof import('./src/components/top-playlist-card.vue')['default']
     User: typeof import('./src/components/user.vue')['default']
+    VirtualList: typeof import('./src/components/virtual-list.vue')['default']
     VituralList: typeof import('./src/components/vitural-list.vue')['default']
     WithPagination: typeof import('./src/components/with-pagination.vue')['default']
   }
